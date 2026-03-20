@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wispr Flow // Partnership Growth Playbook by Vijay Srinivas</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --accent: #c8ff00;
+    --accent-dim: #8aad00;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --text-muted: #555;
+    --border: #2a2a2a;
+    --pulse: #00d4aa;
+    --danger: #ff4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  .section {
+    padding: 80px 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section:first-of-type {
+    padding-top: 60px;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 40px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .opportunity-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .opportunity {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .opportunity:hover {
+    border-color: var(--accent);
+  }
+
+  .opportunity:hover .opp-number {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .opp-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 32px;
+  }
+
+  .opp-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .opp-meta { flex: 1; }
+
+  .opp-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .opp-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+    margin-top: 4px;
+  }
+
+  .opp-tags {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .opp-tag {
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+
+  .opp-tag.partnership { border-color: var(--pulse); color: var(--pulse); }
+  .opp-tag.channel { border-color: var(--accent); color: var(--accent); }
+  .opp-tag.guerrilla { border-color: #ff8844; color: #ff8844; }
+  .opp-tag.collab { border-color: #aa88ff; color: #aa88ff; }
+
+  .opp-body {
+    padding: 0 32px 28px 92px;
+    display: none;
+  }
+
+  .opportunity.active .opp-body { display: block; }
+  .opportunity.active { border-color: var(--accent); }
+  .opportunity.active .opp-number { background: var(--accent); color: var(--bg); }
+
+  .opp-body p {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .opp-body .playbook {
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 12px;
+  }
+
+  .playbook-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .playbook-item {
+    font-size: 14px;
+    color: var(--text);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+  }
+
+  .playbook-item:last-child { border-bottom: none; }
+  .playbook-item::before { content: '\2192'; color: var(--accent); flex-shrink: 0; }
+
+  .opp-body .campaign-ref {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-left: 2px solid var(--accent);
+    background: rgba(200, 255, 0, 0.03);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .campaign-ref-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-bottom: 6px;
+  }
+
+  .campaign-ref p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 0;
+    font-style: italic;
+  }
+
+  .toggle-arrow {
+    color: var(--text-muted);
+    font-size: 18px;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .opportunity.active .toggle-arrow { transform: rotate(90deg); color: var(--accent); }
+
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .opp-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .opp-body { padding: 0 20px 24px 20px; }
+    .opp-tags { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<section class="section">
+  <div class="section-label">Vijay Srinivas // Partnership Growth Playbook</div>
+  <div class="section-title">6 Plays I'd Execute for<br><em>Wispr Flow</em></div>
+  <p style="font-size: 16px; color: var(--text-dim); line-height: 1.8; max-width: 800px; margin-bottom: 48px;">
+    I went deep on Wispr before writing any of this. The Porsche GT3 RS challenge that got 3.5M views on zero ad spend. The brass band outside the Apple Store roasting Siri. The 375K gamified waitlist. The DOAC alliance with Steven Bartlett. None of these plays are generic co-marketing. Each one is built around how you actually operate: guerrilla energy, manufactured virality, cultural provocation, and this core belief that voice is about to eat the keyboard. Here's what I'd build if I were on your team.
+  </p>
+
+  <div class="opportunity-grid">
+
+    <!-- 1 -->
+    <div class="opportunity" onclick="toggleOpp(this)">
+      <div class="opp-header">
+        <div class="opp-number">01</div>
+        <div class="opp-meta">
+          <div class="opp-title">"Keyboard Funeral" Tour × WeWork / Coworking Chains</div>
+          <div class="opp-subtitle">Coworking Infiltration Play</div>
+        </div>
+        <div class="opp-tags">
+          <span class="opp-tag guerrilla">Guerrilla</span>
+          <span class="opp-tag partnership">Partnership</span>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="opp-body">
+        <p>I'd partner with coworking chains like WeWork, Industrious, 91springboard in India to host literal "Keyboard Funerals." Pop-up events where workers ceremonially retire their keyboards for a day. Coffin. Flowers. Eulogy. A brass band (it's tradition now). Every attendee gets 6 months of Wispr Pro free.</p>
+        <p>The visual of a keyboard in a tiny coffin surrounded by office workers in fake mourning is inherently shareable. Brand theater that creates its own media coverage, no ad budget required.</p>
+        <div class="playbook">
+          <div class="playbook-label">How I'd Execute</div>
+          <div class="playbook-item">Stage in 5 cities simultaneously for one "Global Keyboard Funeral Day"</div>
+          <div class="playbook-item">Each city features local influencers delivering keyboard eulogies</div>
+          <div class="playbook-item">Coworking partner gets branded as "Voice-First Workspace" for the month</div>
+          <div class="playbook-item">Attendees get Wispr Pro + coworking day pass bundle</div>
+        </div>
+        <div class="campaign-ref">
+          <div class="campaign-ref-label">Why this fits</div>
+          <p>You brought a brass band to an Apple Store. A funeral for the QWERTY is the natural next act. The Porsche challenge proved confidence in accuracy. A funeral says: "We're so sure keyboards are dead, we're burying them."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="opportunity" onclick="toggleOpp(this)">
+      <div class="opp-header">
+        <div class="opp-number">02</div>
+        <div class="opp-meta">
+          <div class="opp-title">"Vibe Coding Championship" × Cursor / Windsurf / Replit</div>
+          <div class="opp-subtitle">Developer Community Moat</div>
+        </div>
+        <div class="opp-tags">
+          <span class="opp-tag collab">Co-Build</span>
+          <span class="opp-tag channel">Channel</span>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="opp-body">
+        <p>You already have native integrations with Cursor, Windsurf, and Replit. But right now these are features, not movements. I'd co-create a "Vibe Coding World Championship", a live-streamed hackathon where developers build apps using ONLY voice. No keyboards allowed. Period.</p>
+        <p>The MrBeast-inspired twist: escalating stakes. Round 1, build a landing page. Round 2, a full CRUD app. Round 3, ship to production. All voice-coded. Prize: a year of Cursor Pro + Wispr Pro + the actual mechanical keyboard the winner will never need again, trophy-mounted in resin.</p>
+        <div class="playbook">
+          <div class="playbook-label">How I'd Execute</div>
+          <div class="playbook-item">Co-brand with Cursor as headline partner, Replit + Windsurf as secondary</div>
+          <div class="playbook-item">Trophy: a custom mechanical keyboard encased in resin, "Never Touch Again"</div>
+        </div>
+        <div class="campaign-ref">
+          <div class="campaign-ref-label">Why this fits</div>
+          <p>Your CTO says developers are the fastest-growing segment. The Porsche challenge proved competitive formats create virality. A coding competition where keyboards are banned is peak Wispr energy. I know how to run these community flywheels at scale.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="opportunity" onclick="toggleOpp(this)">
+      <div class="opp-header">
+        <div class="opp-number">03</div>
+        <div class="opp-meta">
+          <div class="opp-title">"Siri Can't Even" Campaign × Nothing Phone / OnePlus</div>
+          <div class="opp-subtitle">Android OEM Pre-Install Play</div>
+        </div>
+        <div class="opp-tags">
+          <span class="opp-tag partnership">Partnership</span>
+          <span class="opp-tag guerrilla">Guerrilla</span>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="opp-body">
+        <p>The Android launch proved the market is starving. The Apple Store stunt proved you're willing to roast incumbents publicly. I'd combine both: partner with a challenger Android OEM. Nothing is the dream match here, same quirky-meets-premium brand DNA. Pre-install Wispr Flow on their next device.</p>
+        <p>The campaign I'd run: a side-by-side "Voice-Off" series. Nothing Phone + Wispr Flow vs. iPhone + Siri. Same prompts. Real people. Unedited. Posted daily for 30 days. Carl Pei and you co-commentate. Two insurgent brands roasting Big Tech together. I've done this kind of co-marketing war room before, built the entire partner ecosystem from zero at RagaAI.</p>
+        <div class="playbook">
+          <div class="playbook-label">How I'd Execute</div>
+          <div class="playbook-item">Nothing Phone pre-installs Wispr Flow on next device launch</div>
+          <div class="playbook-item">30-day "Voice-Off" series: Nothing+Wispr vs iPhone+Siri</div>
+          <div class="playbook-item">Both CEOs trash-talk on X/LinkedIn, let the communities fight it out</div>
+          <div class="playbook-item">Nothing community gets lifetime Wispr Pro with purchase</div>
+        </div>
+        <div class="campaign-ref">
+          <div class="campaign-ref-label">Why this fits</div>
+          <p>You already roasted Siri outside the Apple Store. Nothing already roasts Apple in their product launches. These brands are soulmates who haven't met yet. Pre-install deals give you distribution, Nothing gets a feature differentiator no other Android OEM has.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="opportunity" onclick="toggleOpp(this)">
+      <div class="opp-header">
+        <div class="opp-number">04</div>
+        <div class="opp-meta">
+          <div class="opp-title">"The Untyped Newsletter" × Beehiiv / Substack Creators</div>
+          <div class="opp-subtitle">Creator Economy Content Engine</div>
+        </div>
+        <div class="opp-tags">
+          <span class="opp-tag collab">Co-Build</span>
+          <span class="opp-tag channel">Channel</span>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="opp-body">
+        <p>Content creators are already a key segment for you (there's a dedicated /content-creators page). But instead of sponsoring existing newsletters, I'd CREATE one. Entirely voice-dictated. "The Untyped" would be a weekly newsletter where every single word is dictated using Wispr Flow. Zero keystrokes. The raw dictation and the polished output published side-by-side.</p>
+        <p>I'd partner with Beehiiv as the infrastructure partner and feature a rotating cast of well-known creators. Each week, a different writer "goes untyped" and dictates their edition. The newsletter IS the product demo. No pitch needed.</p>
+        <div class="playbook">
+          <div class="playbook-label">How I'd Execute</div>
+          <div class="playbook-item">Weekly newsletter: one creator dictates the entire thing with Wispr</div>
+          <div class="playbook-item">Show the "before" (raw speech) and "after" (Wispr-polished) side by side</div>
+          <div class="playbook-item">Beehiiv co-distributes to their creator network</div>
+          <div class="playbook-item">Each creator's audience gets a custom Wispr referral code</div>
+        </div>
+        <div class="campaign-ref">
+          <div class="campaign-ref-label">Why this fits</div>
+          <p>The Steven Bartlett/DOAC partnership shows you understand creator-led distribution. "The Untyped" is product-as-content: the newsletter IS the demo. It proves the product works while building an audience that converts. I've built content engines like this before.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="opportunity" onclick="toggleOpp(this)">
+      <div class="opp-header">
+        <div class="opp-number">05</div>
+        <div class="opp-meta">
+          <div class="opp-title">"Voice-First VC" × a16z / Y Combinator Batch Deal</div>
+          <div class="opp-subtitle">Ecosystem Distribution Hack</div>
+        </div>
+        <div class="opp-tags">
+          <span class="opp-tag partnership">Partnership</span>
+          <span class="opp-tag channel">Channel</span>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="opp-body">
+        <p>When you raised the Series A, every VC in Silicon Valley was already using the product daily. Reid Hoffman, Marc Andreessen, Steve Wozniak are all users. The ecosystem is primed. I'd formalize it.</p>
+        <p>I'd pitch YC (or a16z's portfolio services) on a "batch deal". Every company in the next YC batch gets Wispr Flow Teams for free for a year. The catch: they submit one video per month showing how they use voice to run their startup. Best videos get featured on Wispr's channels. YC gets a differentiated perk. You get 200+ startup founding teams as power users every 6 months. This is the kind of ecosystem distribution play I built at RagaAI when I was closing Fortune 500 accounts through partner networks.</p>
+        <div class="playbook">
+          <div class="playbook-label">How I'd Execute</div>
+          <div class="playbook-item">Free Wispr Teams for every YC/a16z portfolio company</div>
+          <div class="playbook-item">Monthly "Voice Diary" video submission for featured content</div>
+          <div class="playbook-item">Top 3 startups get Wispr Enterprise upgrade</div>
+          <div class="playbook-item">You do a "Voice Masterclass" at each YC Demo Day</div>
+        </div>
+        <div class="campaign-ref">
+          <div class="campaign-ref-label">Why this fits</div>
+          <p>Wispr grew 90% through word-of-mouth. Startup founders are multiplier nodes, they influence employees, investors, and other founders. Seed the YC batch and you seed 200 companies that will carry Wispr into their next 5 years of growth.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="opportunity" onclick="toggleOpp(this)">
+      <div class="opp-header">
+        <div class="opp-number">06</div>
+        <div class="opp-meta">
+          <div class="opp-title">"Wispr for India" × Jio / PhonePe / Flipkart</div>
+          <div class="opp-subtitle">The Hinglish Homeland Play</div>
+        </div>
+        <div class="opp-tags">
+          <span class="opp-tag partnership">Partnership</span>
+          <span class="opp-tag channel">Channel</span>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="opp-body">
+        <p>You're Delhi-born. You built a dedicated Hinglish model because you personally needed it. India has 750M+ smartphone users, most of whom code-switch between Hindi and English constantly. No voice tool handles this well. Wispr does. This is a founder-market fit goldmine that's barely been tapped.</p>
+        <p>I'd partner with an Indian super-app, Jio, PhonePe, or Flipkart, to bundle Wispr Flow as the default voice input layer. The campaign: "Type karna band karo" (Stop typing). Real Indian users in the creatives: auto-rickshaw drivers dictating WhatsApp messages, college students voice-drafting assignments in Hinglish, startup founders running their companies by voice. This isn't a localization play. It's a homecoming story. And as someone based in Bengaluru with deep Indian market GTM experience (IIM Ahmedabad, IISc), I'm the right person to run this.</p>
+        <div class="playbook">
+          <div class="playbook-label">How I'd Execute</div>
+          <div class="playbook-item">Partner with JioPhone or Realme for pre-install on India-first devices</div>
+          <div class="playbook-item">Launch "Type Karna Band Karo" campaign with Bollywood/cricket micro-influencers</div>
+          <div class="playbook-item">Free unlimited Wispr for Indian users during IPL season (60-day window)</div>
+          <div class="playbook-item">Campus tours at IITs/IIMs, leveraging your alumni network and mine</div>
+        </div>
+        <div class="campaign-ref">
+          <div class="campaign-ref-label">Why this fits</div>
+          <p>You said it yourself: "If you're someone like me, English and Hindi weave together. This is one of those times when I just had to build something for me." The Hinglish model isn't a feature, it's a love letter. India is where your founder story, technical capability, and user need perfectly align. I'd be the person to unlock it.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="footer">
+  <p>Built by Vijay Srinivas // March 2026</p>
+  <p style="margin-top: 4px; color: var(--text-muted);">AI GTM Leader · First Commercial Hire @ RagaAI · IIM Ahmedabad · IISc</p>
+  <p style="margin-top: 8px; color: var(--text-muted);">If you hire me, this is what I execute.</p>
+</div>
+
+<script>
+  function toggleOpp(el) {
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.opportunity').forEach(o => o.classList.remove('active'));
+    if (!wasActive) el.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
