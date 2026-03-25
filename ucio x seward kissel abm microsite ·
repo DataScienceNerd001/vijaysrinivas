@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucio AI × Seward & Kissel LLP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A1628;
+  --navy-light: #132240;
+  --navy-mid: #1B3058;
+  --gold: #C9A84C;
+  --gold-light: #E8D5A0;
+  --gold-dim: rgba(201, 168, 76, 0.15);
+  --white: #F8F6F1;
+  --white-pure: #FFFFFF;
+  --gray: #8B96A9;
+  --gray-light: #C5CDD8;
+  --text: #E8E6E1;
+  --green: #3ECF8E;
+  --red-soft: #E8716D;
+  --blue-accent: #4A90D9;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes lineGrow {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.8s ease-out forwards;
+}
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+.delay-6 { animation-delay: 0.6s; }
+.delay-7 { animation-delay: 0.7s; }
+
+/* ===== GLOBAL ===== */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+a { color: var(--gold); text-decoration: none; }
+a:hover { color: var(--gold-light); }
+
+/* ===== TOP BAR ===== */
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 22, 40, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+.top-bar .logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+.top-bar .logo span { color: var(--gold); }
+.top-bar .cta-small {
+  padding: 10px 24px;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.top-bar .cta-small:hover {
+  background: var(--gold-light);
+  color: var(--navy);
+  transform: translateY(-1px);
+}
+
+/* ===== HERO ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 120px 0 80px;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 80%;
+  height: 200%;
+  background: radial-gradient(ellipse at center, rgba(201, 168, 76, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.3;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 32px;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 62px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--white);
+  margin-bottom: 28px;
+  max-width: 800px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+.hero-sub {
+  font-size: 19px;
+  color: var(--gray-light);
+  max-width: 620px;
+  margin-bottom: 20px;
+  font-weight: 300;
+  line-height: 1.8;
+}
+.hero-context {
+  font-size: 14px;
+  color: var(--gray);
+  max-width: 560px;
+  margin-bottom: 40px;
+  line-height: 1.8;
+}
+.hero-context strong { color: var(--gold-light); font-weight: 500; }
+.hero-cta-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 15px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+}
+.cta-primary:hover {
+  background: var(--gold-light);
+  color: var(--navy);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201, 168, 76, 0.3);
+}
+.cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  background: transparent;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 15px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+.cta-secondary:hover {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+  color: var(--gold-light);
+}
+
+/* ===== STATS BAR ===== */
+.stats-bar {
+  padding: 60px 0;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.stat-item {
+  text-align: center;
+  padding: 20px;
+  position: relative;
+}
+.stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: rgba(201, 168, 76, 0.15);
+}
+.stat-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 500;
+}
+
+/* ===== SECTION STYLING ===== */
+section {
+  padding: 100px 0;
+  position: relative;
+}
+section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.15), transparent);
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 20px;
+  line-height: 1.25;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--gray-light);
+  max-width: 640px;
+  margin-bottom: 50px;
+  font-weight: 300;
+  line-height: 1.8;
+}
+
+/* ===== WHY NOW SECTION ===== */
+.why-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.why-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  border-radius: 12px;
+  padding: 36px;
+  transition: all 0.4s;
+}
+.why-card:hover {
+  border-color: rgba(201, 168, 76, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.why-card .icon {
+  width: 48px;
+  height: 48px;
+  background: var(--gold-dim);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+.why-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: var(--white);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.why-card p {
+  font-size: 15px;
+  color: var(--gray-light);
+  line-height: 1.7;
+}
+
+/* ===== USE CASES ===== */
+.use-cases {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.use-case {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 36px;
+  align-items: start;
+  padding: 36px;
+  background: var(--navy-light);
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+.use-case:hover {
+  border-color: rgba(201, 168, 76, 0.2);
+}
+.use-case-practice {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  color: var(--gold);
+  font-weight: 600;
+  padding-top: 4px;
+}
+.use-case-practice small {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+.use-case h3 {
+  font-size: 18px;
+  color: var(--white);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.use-case p {
+  font-size: 15px;
+  color: var(--gray-light);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.use-case-metric {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(62, 207, 142, 0.1);
+  border: 1px solid rgba(62, 207, 142, 0.2);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* ===== COMPARISON TABLE ===== */
+.comparison-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 168, 76, 0.12);
+}
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.comparison-table thead th {
+  padding: 20px 24px;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gray);
+  background: var(--navy-light);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+.comparison-table thead th:first-child { border-radius: 12px 0 0 0; }
+.comparison-table thead th:last-child { border-radius: 0 12px 0 0; }
+.comparison-table thead th.highlight {
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.08);
+}
+.comparison-table tbody td {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.06);
+  color: var(--gray-light);
+  vertical-align: top;
+}
+.comparison-table tbody td:first-child {
+  font-weight: 600;
+  color: var(--white);
+}
+.comparison-table tbody td.highlight {
+  color: var(--white);
+  background: rgba(201, 168, 76, 0.04);
+}
+.check { color: var(--green); font-weight: 700; }
+.x-mark { color: var(--red-soft); font-weight: 700; }
+.partial { color: var(--gold); }
+
+/* ===== ROI SECTION ===== */
+.roi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.roi-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  border-radius: 12px;
+  padding: 36px 30px;
+  text-align: center;
+}
+.roi-card .roi-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.roi-card .roi-unit {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.roi-card .roi-desc {
+  font-size: 14px;
+  color: var(--gray-light);
+  line-height: 1.6;
+}
+.roi-card .roi-desc strong {
+  color: var(--white);
+}
+.roi-note {
+  font-size: 14px;
+  color: var(--gray);
+  text-align: center;
+  font-style: italic;
+  padding: 20px;
+  border: 1px dashed rgba(201, 168, 76, 0.15);
+  border-radius: 8px;
+}
+.roi-note strong { color: var(--gold-light); font-style: normal; }
+
+/* ===== TESTIMONIALS ===== */
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.testimonial {
+  background: var(--navy-light);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  border-radius: 12px;
+  padding: 36px;
+  position: relative;
+}
+.testimonial::before {
+  content: '\201C';
+  font-family: 'Playfair Display', serif;
+  font-size: 60px;
+  color: var(--gold);
+  opacity: 0.3;
+  position: absolute;
+  top: 16px;
+  left: 24px;
+  line-height: 1;
+}
+.testimonial blockquote {
+  font-size: 15px;
+  color: var(--gray-light);
+  line-height: 1.8;
+  font-style: italic;
+  margin-bottom: 20px;
+  padding-top: 20px;
+}
+.testimonial cite {
+  font-style: normal;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+}
+.testimonial cite span {
+  display: block;
+  color: var(--gray);
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+/* ===== TIMELINE ===== */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold), rgba(201, 168, 76, 0.1));
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 40px;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -33px;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  background: var(--navy);
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+}
+.timeline-week {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.timeline-item h3 {
+  font-size: 18px;
+  color: var(--white);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.timeline-item p {
+  font-size: 15px;
+  color: var(--gray-light);
+  line-height: 1.7;
+}
+
+/* ===== FINAL CTA ===== */
+.final-cta {
+  text-align: center;
+  padding: 100px 0 120px;
+}
+.final-cta .section-title {
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+.final-cta .section-desc {
+  max-width: 500px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+.final-cta-group {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.confidential-note {
+  margin-top: 60px;
+  font-size: 12px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* ===== SECURITY BADGES ===== */
+.security-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 50px;
+  flex-wrap: wrap;
+}
+.security-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--gray);
+  font-weight: 500;
+}
+.security-badge .badge-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .container { padding: 0 24px; }
+  .top-bar { padding: 12px 24px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2)::after { display: none; }
+  .why-cards { grid-template-columns: 1fr; }
+  .use-case { grid-template-columns: 1fr; }
+  .roi-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .comparison-table { font-size: 12px; }
+  .comparison-table thead th,
+  .comparison-table tbody td { padding: 12px 14px; }
+  .hero-cta-group { flex-direction: column; }
+  .final-cta-group { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="logo">Lucio<span>.</span>ai <span style="color: var(--gray); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;">× Seward & Kissel</span></div>
+  <a href="#schedule" class="cta-small">Schedule a Call</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge fade-up">Prepared exclusively for Seward & Kissel LLP</div>
+    <h1 class="fade-up delay-1">153 lawyers competing<br>against firms with <em>1,500.</em><br>That takes an edge.</h1>
+    <p class="hero-sub fade-up delay-2">Lucio is the AI-native legal workspace that gives mid-market firms like Seward & Kissel the document review speed, due diligence depth, and drafting precision of a firm ten times your size.</p>
+    <p class="hero-context fade-up delay-3">Your Business Transactions Group just closed the <strong>Taurus Asset Management / Mariner deal</strong> and the <strong>Belmont Capital / Gateway-Natixis acquisition</strong> — both billion-dollar AUM asset management transactions requiring intensive document review. Imagine compressing weeks of DD into days.</p>
+    <div class="hero-cta-group fade-up delay-4">
+      <a href="#schedule" class="cta-primary">See Your Documents Processed in 48 Hours &rarr;</a>
+      <a href="#how" class="cta-secondary">How It Works for S&K</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item fade-up delay-1">
+        <div class="stat-number">250+</div>
+        <div class="stat-label">Legal teams worldwide</div>
+      </div>
+      <div class="stat-item fade-up delay-2">
+        <div class="stat-number">30</div>
+        <div class="stat-label">Hours saved / lawyer / month</div>
+      </div>
+      <div class="stat-item fade-up delay-3">
+        <div class="stat-number">13</div>
+        <div class="stat-label">Jurisdictions covered</div>
+      </div>
+      <div class="stat-item fade-up delay-4">
+        <div class="stat-number">8M+</div>
+        <div class="stat-label">Pages processed</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY NOW -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Why This Matters for S&K Right Now</div>
+    <div class="section-title fade-up delay-1">Your competitors are already moving.</div>
+    <div class="section-desc fade-up delay-2">Seward & Kissel's Managing Partner James Cofer says the firm "competes with much larger, name-brand firms on a daily basis." AI is how you maintain that edge — or lose it.</div>
+
+    <div class="why-cards">
+      <div class="why-card fade-up delay-2">
+        <div class="icon">&#9878;</div>
+        <h3>The Integrated Corporate Group Needs Integrated AI</h3>
+        <p>S&K recently unified its corporate departments into a single practice — M&A, loans, capital markets, and secured finance. Lucio is the AI layer that makes that integration productive, letting associates pull insights across practice areas from a single workspace instead of siloed tools.</p>
+      </div>
+      <div class="why-card fade-up delay-3">
+        <div class="icon">&#9733;</div>
+        <h3>Harvey Charges $288K+ Per Year. You Shouldn't Have To.</h3>
+        <p>At ~$1,200/seat with 20+ seat minimums, Harvey's entry point exceeds $288K annually. For a 153-lawyer firm, that's over $183K just for your corporate group. Lucio delivers comparable capabilities at a fraction of that — built specifically for firms your size.</p>
+      </div>
+      <div class="why-card fade-up delay-4">
+        <div class="icon">&#128274;</div>
+        <h3>Your Clients Demand Confidentiality. So Do We.</h3>
+        <p>S&K represents a third of the top 200 hedge fund managers. Their data is extraordinarily sensitive. Lucio deploys in your private cloud or VPC — data never leaves your jurisdiction, is never used for model training, and meets SOC 2 Type II and ISO 27001:2022 standards.</p>
+      </div>
+      <div class="why-card fade-up delay-5">
+        <div class="icon">&#128640;</div>
+        <h3>Your Associates Are Already Using ChatGPT. Give Them Something Safe.</h3>
+        <p>Junior associates at mid-market firms are 5x more likely to use AI than a year ago. Without a firm-sanctioned tool, they default to consumer AI — pasting client documents into ChatGPT. Lucio gives them a secure, purpose-built alternative that protects S&K's reputation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section id="how">
+  <div class="container">
+    <div class="section-label fade-up">Built for How S&K Actually Works</div>
+    <div class="section-title fade-up delay-1">Five use cases mapped to your practice areas.</div>
+    <div class="section-desc fade-up delay-2">These aren't generic capabilities. Each use case below is mapped to a specific S&K practice group with real-world scenarios from your deal types.</div>
+
+    <div class="use-cases">
+      <div class="use-case fade-up delay-2">
+        <div class="use-case-practice">Investment Management <small>Fund Formation & Compliance</small></div>
+        <div>
+          <h3>Regulatory Document Review at Scale</h3>
+          <p>S&K's Investment Management practice handles Form ADV filings, offering documents, and compliance reviews for hundreds of hedge fund clients. Lucio can review an entire fund's regulatory filing suite in minutes — cross-checking disclosures, flagging inconsistencies with prior filings, and comparing against SEC guidance.</p>
+          <span class="use-case-metric">&#x2193; 80% reduction in compliance review time</span>
+        </div>
+      </div>
+
+      <div class="use-case fade-up delay-3">
+        <div class="use-case-practice">Business Transactions <small>Middle-Market M&A</small></div>
+        <div>
+          <h3>Due Diligence Acceleration for Asset Manager Deals</h3>
+          <p>The Taurus/Mariner and Belmont/Gateway deals involved reviewing AUM documentation, investment advisory agreements, client contracts, and regulatory filings. Lucio processes 500+ document DD sets in hours, generating key issues lists, risk flags, and a structured DD report — the same output that took your associate team weeks.</p>
+          <span class="use-case-metric">&#x2193; From 2 weeks to 2 days for full DD review</span>
+        </div>
+      </div>
+
+      <div class="use-case fade-up delay-4">
+        <div class="use-case-practice">Maritime & Transportation <small>Ship Finance & Restructuring</small></div>
+        <div>
+          <h3>Multi-Jurisdictional Contract Analysis</h3>
+          <p>S&K's maritime practice deals with contracts governed by multiple legal regimes — Marshall Islands, Liberia, Panama, UK, US. Lucio's multi-jurisdiction capability reviews and compares charter party agreements, ship finance documents, and cross-border security arrangements with jurisdiction-specific flags.</p>
+          <span class="use-case-metric">&#x2193; 13 jurisdictions supported natively</span>
+        </div>
+      </div>
+
+      <div class="use-case fade-up delay-5">
+        <div class="use-case-practice">Corporate Finance <small>Capital Markets & Private Credit</small></div>
+        <div>
+          <h3>Loan Document Drafting & Playbook Review</h3>
+          <p>S&K's newly formalized Private Credit group handles complex lending documentation. Lucio reviews credit agreements against your internal playbooks, instantly flags deviations from standard terms, and drafts amendment language — reducing turnaround from days to hours on time-sensitive financings.</p>
+          <span class="use-case-metric">&#x2193; 70% faster contract playbook review</span>
+        </div>
+      </div>
+
+      <div class="use-case fade-up delay-6">
+        <div class="use-case-practice">Litigation <small>Securities & Business Disputes</small></div>
+        <div>
+          <h3>Case File Analysis & Timeline Generation</h3>
+          <p>For securities litigation and government enforcement matters, Lucio ingests thousands of pages of case files, surfaces critical facts, generates chronological timelines mapping orders to pleadings, and identifies relevant precedents — giving your litigation team a structured foundation in hours, not weeks.</p>
+          <span class="use-case-metric">&#x2193; From 47 hours to 4.2 hours (benchmark average)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Honest Comparison</div>
+    <div class="section-title fade-up delay-1">Lucio vs. the alternatives — for a firm like S&K.</div>
+    <div class="section-desc fade-up delay-2">We don't believe in hiding from competitors. Here's an honest look at how Lucio compares for a 153-lawyer financial services firm.</div>
+
+    <div class="comparison-wrapper fade-up delay-3">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th class="highlight">Lucio</th>
+            <th>Harvey</th>
+            <th>CoCounsel</th>
+            <th>ChatGPT / Copilot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Est. Annual Cost (153 lawyers)</td>
+            <td class="highlight" style="color: var(--green); font-weight: 700;">$275K–$550K</td>
+            <td>$1.1M–$1.8M</td>
+            <td>$413K–$918K</td>
+            <td>$36K–$55K</td>
+          </tr>
+          <tr>
+            <td>Doc Review & Due Diligence</td>
+            <td class="highlight"><span class="check">&#10003; Deep</span></td>
+            <td><span class="check">&#10003;</span> Strong</td>
+            <td><span class="partial">&#9679;</span> Limited</td>
+            <td><span class="x-mark">&#10005;</span> None</td>
+          </tr>
+          <tr>
+            <td>Contract Drafting & Redlining</td>
+            <td class="highlight"><span class="check">&#10003;</span> Full</td>
+            <td><span class="check">&#10003;</span> Full</td>
+            <td><span class="partial">&#9679;</span> Basic</td>
+            <td><span class="x-mark">&#10005;</span> Unsafe</td>
+          </tr>
+          <tr>
+            <td>Private Cloud / VPC Deployment</td>
+            <td class="highlight"><span class="check">&#10003;</span></td>
+            <td><span class="partial">&#9679;</span> Enterprise only</td>
+            <td><span class="x-mark">&#10005;</span></td>
+            <td><span class="x-mark">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td>Data Never Used for Training</td>
+            <td class="highlight"><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="x-mark">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td>Multi-Jurisdiction Support (13+)</td>
+            <td class="highlight"><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="partial">&#9679;</span> US-centric</td>
+            <td><span class="partial">&#9679;</span> General</td>
+          </tr>
+          <tr>
+            <td>Word & Outlook Integration</td>
+            <td class="highlight"><span class="check">&#10003;</span> Native</td>
+            <td><span class="partial">&#9679;</span> Separate app</td>
+            <td><span class="check">&#10003;</span> Westlaw</td>
+            <td><span class="check">&#10003;</span> Copilot</td>
+          </tr>
+          <tr>
+            <td>Dedicated Adoption Support (Service Layer)</td>
+            <td class="highlight"><span class="check">&#10003;</span> Included</td>
+            <td><span class="partial">&#9679;</span> Extra cost</td>
+            <td><span class="x-mark">&#10005;</span></td>
+            <td><span class="x-mark">&#10005;</span></td>
+          </tr>
+          <tr>
+            <td>SOC 2 Type II + ISO 27001</td>
+            <td class="highlight"><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="check">&#10003;</span></td>
+            <td><span class="partial">&#9679;</span> SOC 2 only</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ROI -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">The Numbers for S&K</div>
+    <div class="section-title fade-up delay-1">What 30 hours back per lawyer per month looks like.</div>
+    <div class="section-desc fade-up delay-2">Conservative estimates based on S&K's $188M revenue, 153 attorneys, and a blended associate billing rate of $600/hour.</div>
+
+    <div class="roi-grid">
+      <div class="roi-card fade-up delay-2">
+        <div class="roi-number">4,590</div>
+        <div class="roi-unit">Hours / Month</div>
+        <div class="roi-desc">Total hours recovered across <strong>153 attorneys</strong> at 30 hours each. That's the equivalent of <strong>26 full-time associates</strong> worth of capacity.</div>
+      </div>
+      <div class="roi-card fade-up delay-3">
+        <div class="roi-number">$33M</div>
+        <div class="roi-unit">Annualized Capacity</div>
+        <div class="roi-desc">At $600/hr blended rate, recovered hours represent <strong>$33M in unlocked billing capacity</strong> — 17.5% of S&K's current revenue.</div>
+      </div>
+      <div class="roi-card fade-up delay-4">
+        <div class="roi-number">60:1</div>
+        <div class="roi-unit">ROI Ratio</div>
+        <div class="roi-desc">If Lucio costs ~$550K/year and unlocks even <strong>10% of the theoretical capacity</strong> ($3.3M), the return is 60x the investment.</div>
+      </div>
+    </div>
+
+    <div class="roi-note fade-up delay-5">
+      <strong>Important:</strong> These are capacity estimates, not guaranteed revenue. The real value is in competitive advantage — faster turnarounds, deeper analysis, and the ability to take on more work without adding headcount. Firms using Lucio report that associates spend freed time on higher-value strategic work, not less work.
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">What Firms Like Yours Are Saying</div>
+    <div class="section-title fade-up delay-1">From firms that compete above their weight class.</div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial fade-up delay-2">
+        <blockquote>Lucio has become integral to how our commercial team handles document review. For corporate due diligence, it's saved significant time working through large document sets.</blockquote>
+        <cite>Kevin Cooper <span>COO, Hadef & Partners (100+ lawyers, Abu Dhabi & Dubai)</span></cite>
+      </div>
+      <div class="testimonial fade-up delay-3">
+        <blockquote>I have been particularly impressed by its ability to review and summarise case file documents in a wide range of formats and languages and to rapidly produce insightful analysis.</blockquote>
+        <cite>Becket McGrath <span>Partner, Euclid Law (UK)</span></cite>
+      </div>
+      <div class="testimonial fade-up delay-4">
+        <blockquote>Lucio's emphasis on the service layer sets it apart. We have been on an exciting journey with the Lucio team — our adoption is driven by client policies and preferences regarding Gen-AI.</blockquote>
+        <cite>Trilegal Management Committee <span>Trilegal (500+ lawyers, India's leading full-service firm)</span></cite>
+      </div>
+      <div class="testimonial fade-up delay-5">
+        <blockquote>Generative AI has the potential to transform legal practice, and Lucio is already showing how. It combines reliability, trust, and speed, making it an essential part of the modern lawyer's toolkit.</blockquote>
+        <cite>Industry Recognition <span>Cited across Chambers, Legal 500, and Financial Express</span></cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <div class="container">
+    <div class="section-label fade-up">Your Onboarding Path</div>
+    <div class="section-title fade-up delay-1">From first call to firm-wide deployment in 8 weeks.</div>
+    <div class="section-desc fade-up delay-2">Lucio's Service Layer means you're not just buying software — you get a dedicated team ensuring your lawyers actually use it.</div>
+
+    <div class="timeline">
+      <div class="timeline-item fade-up delay-2">
+        <div class="timeline-week">Week 1</div>
+        <h3>48-Hour Proof of Value</h3>
+        <p>Send us 10 real (anonymized) documents from a recent S&K matter — a fund formation package, a DD set, or a credit agreement. Within 48 hours, we return a finished work product: summarized key issues, risk flags, and a structured analysis. Zero effort from your team.</p>
+      </div>
+      <div class="timeline-item fade-up delay-3">
+        <div class="timeline-week">Weeks 2–3</div>
+        <h3>Pilot with Business Transactions Group</h3>
+        <p>5–10 attorneys in your newly integrated corporate practice run a 2-week sandboxed pilot on live matters. Lucio's Service Layer team provides hands-on training, builds S&K-specific use case templates, and measures time savings against baselines.</p>
+      </div>
+      <div class="timeline-item fade-up delay-4">
+        <div class="timeline-week">Weeks 4–5</div>
+        <p>Expand to Investment Management and Litigation. Configure jurisdiction-specific settings for maritime (Marshall Islands, Liberia, Panama). Integrate with S&K's document management system. Security review with your IT team.</p>
+        <h3>Practice Group Expansion</h3>
+      </div>
+      <div class="timeline-item fade-up delay-5">
+        <div class="timeline-week">Weeks 6–8</div>
+        <h3>Firm-Wide Rollout</h3>
+        <p>Full deployment across all 153 attorneys and both offices (NYC + DC). Dedicated Lucio Service Layer representative assigned to S&K for ongoing adoption support, quarterly business reviews, and use case development as your needs evolve.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="schedule">
+  <div class="container">
+    <div class="section-label fade-up">Next Step</div>
+    <div class="section-title fade-up delay-1">See Lucio work on <em>your</em> documents.<br>Not a demo. Your actual work.</div>
+    <div class="section-desc fade-up delay-2">Send us 10 documents from a recent S&K matter. In 48 hours, we'll return a finished work product — no commitment, no integration required.</div>
+
+    <div class="final-cta-group fade-up delay-3">
+      <a href="mailto:darsan@lucioai.com?subject=Seward%20%26%20Kissel%20%E2%80%94%2048-Hour%20Proof%20of%20Value&body=Hi%20Darsan%2C%0A%0AWe%E2%80%99d%20like%20to%20explore%20Lucio%20for%20Seward%20%26%20Kissel.%20When%20would%20be%20a%20good%20time%20for%20a%20brief%20call%3F" class="cta-primary">Schedule a 48-Hour Proof of Value &rarr;</a>
+      <a href="mailto:darsan@lucioai.com?subject=Seward%20%26%20Kissel%20%E2%80%94%20Security%20Architecture%20Review" class="cta-secondary">Request Security Documentation</a>
+    </div>
+
+    <div class="security-row fade-up delay-4">
+      <div class="security-badge">
+        <div class="badge-icon">&#128274;</div>
+        SOC 2 Type II
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">&#9989;</div>
+        ISO 27001:2022
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">&#127760;</div>
+        GDPR Compliant
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">&#128736;</div>
+        Private Cloud / VPC
+      </div>
+      <div class="security-badge">
+        <div class="badge-icon">&#128683;</div>
+        No Training on Your Data
+      </div>
+    </div>
+
+    <div class="confidential-note fade-up delay-5">
+      This page was prepared exclusively for Seward & Kissel LLP &middot; Confidential &middot; March 2026
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
