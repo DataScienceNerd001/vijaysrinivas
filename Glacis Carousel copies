@@ -1,764 +1,122 @@
-import { useState } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glacis — Order Intake Carousel</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;font-family:'DM Sans',sans-serif;color:#fff;min-height:100vh;display:flex;justify-content:center;padding:20px}
+.wrap{max-width:440px;width:100%}
+.title{font-size:16px;font-weight:600;margin-bottom:4px}
+.sub{font-size:13px;color:#888;margin-bottom:20px}
+.slide{width:100%;aspect-ratio:4/5;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.dots{display:flex;justify-content:center;gap:6px;margin-top:16px}
+.dot{width:8px;height:8px;border-radius:4px;background:#333;border:none;cursor:pointer;transition:all .2s;padding:0}
+.dot.active{width:20px;background:#3DCD58}
+.nav{display:flex;justify-content:space-between;margin-top:16px}
+.nav button{padding:10px 20px;background:#222;border:none;border-radius:8px;color:#888;cursor:pointer;font-size:14px;font-family:'DM Sans',sans-serif}
+.nav button:hover{background:#333;color:#aaa}
+.count{color:#555;font-size:13px;align-self:center}
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'DM Sans',sans-serif}
+.tab.active{background:#3DCD58;color:#0B1A14}
+.tab:not(.active){background:#222;color:#888}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="tabs" id="tabs"></div>
+<div class="title" id="vt"></div>
+<div class="sub" id="vs"></div>
+<div class="slide" id="sl"></div>
+<div class="dots" id="dt"></div>
+<div class="nav"><button onclick="pr()">← Previous</button><span class="count" id="ct"></span><button onclick="nx()">Next →</button></div>
+</div>
+<script>
+var G='#3DCD58',D='#0B1A14',T='#F7F5F0',M='#8BA89A',ML='#C5E8D4',P='#1A2E23',SF="font-family:'Instrument Serif',Georgia,serif";
 
-const GREEN = "#3DCD58";
-const DARK = "#0B1A14";
-const DARK2 = "#1A3A2A";
-const TEXT = "#F7F5F0";
-const MUTED = "#8BA89A";
-const MUTED_LIGHT = "#C5E8D4";
-const PANEL = "#1A2E23";
-const SERIF = "'Instrument Serif', Georgia, serif";
+function tag(cls,text){return '<div style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;'+
+(cls==='myth'?'background:rgba(200,50,50,.15);color:#E07070':cls==='reality'?'background:rgba(61,205,88,.12);color:'+G:'color:'+G+';letter-spacing:2px')+'">'+text+'</div>';}
+function h(size,text){return '<div style="'+SF+';font-size:'+size+'px;color:'+T+';line-height:1.3;margin-bottom:16px">'+text+'</div>';}
+function body(text){return '<div style="font-size:14px;color:'+M+';line-height:1.75">'+text+'</div>';}
+function panel(text){return '<div style="padding:12px 16px;background:'+P+';border-radius:8px;font-size:13px;color:'+ML+';margin-top:16px">'+text+'</div>';}
+function divr(c){return '<div style="width:40px;height:2px;background:rgba('+(c==='r'?'200,50,50':'61,205,88')+',.4);margin-bottom:20px"></div>';}
+function proof(name,text){return '<div style="display:flex;gap:10px;padding:10px 12px;background:'+P+';border-radius:8px;margin-bottom:8px"><div style="width:6px;height:6px;border-radius:50%;background:'+G+';margin-top:5px;flex-shrink:0"></div><div><div style="font-size:12px;color:'+G+';font-weight:600;margin-bottom:2px">'+name+'</div><div style="font-size:12px;color:'+ML+';line-height:1.5">'+text+'</div></div></div>';}
+function stat(num,label){return '<div style="padding:12px 10px;background:'+P+';border-radius:8px;text-align:center"><div style="'+SF+';font-size:22px;color:'+G+';margin-bottom:4px">'+num+'</div><div style="font-size:11px;color:'+M+';line-height:1.4">'+label+'</div></div>';}
+function numcard(n,bg,content){return '<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px"><div style="width:36px;height:36px;border-radius:8px;background:'+P+';display:flex;align-items:center;justify-content:center;'+SF+';font-size:20px;color:'+G+'">'+n+'</div><div>'+content+'</div></div>';}
+function cta(text,sub){return '<div style="padding:36px 28px;text-align:center"><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.35;margin-bottom:16px">'+text+'</div><div style="font-size:14px;color:'+ML+';margin-bottom:28px;line-height:1.65">'+sub+'</div><div style="display:inline-block;padding:13px 30px;background:'+G+';color:'+D+';border-radius:8px;font-weight:700;font-size:14px;margin-bottom:12px">Read the full report</div><div style="font-size:12px;color:'+M+';margin-top:10px">glacis.com/insights</div><div style="margin-top:20px;font-size:13px;color:'+M+'">Philipp Gutheim · Founder & CEO, Glacis</div></div>';}
+function row3(label,before,after,change){return '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:10px 12px;background:'+P+';border-radius:8px;margin-bottom:8px"><div><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">'+label+'</div><div style="font-size:12px;color:#E07070">'+before+'</div></div><div><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">After</div><div style="font-size:12px;color:'+ML+'">'+after+'</div></div><div style="text-align:right"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px">Change</div><div style="font-size:13px;color:'+G+';font-weight:700">'+change+'</div></div></div>';}
+function step(n,text){return '<div style="display:flex;gap:10px;align-items:start"><div style="font-size:11px;color:'+M+';min-width:16px;margin-top:2px">'+n+'.</div><div style="font-size:13px;color:'+ML+';line-height:1.5">'+text+'</div></div>';}
+function patternItem(n,text){return '<div style="display:flex;gap:12px;align-items:start;margin-bottom:8px"><div style="width:20px;height:20px;border-radius:50%;background:'+P+';border:1px solid '+G+';display:flex;align-items:center;justify-content:center;font-size:10px;color:'+G+';flex-shrink:0">'+n+'</div><div style="font-size:13px;color:'+ML+';line-height:1.5">'+text+'</div></div>';}
 
-const VARIATIONS = {
-  myth: {
-    title: "V3: Myth vs. Reality",
-    subtitle: "Contrarian framework · Thought leadership · Awareness stage",
-    slides: [
-      {
-        bg: `linear-gradient(160deg, ${DARK} 0%, #0E2018 100%)`,
-        content: (
-          <div style={{ padding: "44px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 20 }}>
-              Glacis · Order Intake Intelligence
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 30, color: TEXT, lineHeight: 1.25, marginBottom: 20 }}>
-              4 things operations leaders believe about order intake.
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: "#6B8A7A", lineHeight: 1.3, marginBottom: 24 }}>
-              The data disagrees with all of them.
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: "auto" }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: GREEN }} />
-              <div style={{ fontSize: 12, color: MUTED }}>Swipe to see each myth →</div>
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A0A0A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(200,50,50,0.15)", borderRadius: 20, fontSize: 11, color: "#E07070", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Myth 1 of 4
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              "Our customers will eventually switch to EDI."
-            </div>
-            <div style={{ width: 40, height: 2, background: "rgba(200,50,50,0.4)", marginBottom: 20 }} />
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75 }}>
-              Operations teams have believed this for a decade. EDI adoption among mid-market B2B buyers has been flat since 2018.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, #0B1A14 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(61,205,88,0.12)", borderRadius: 20, fontSize: 11, color: GREEN, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Reality
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              Non-EDI order volume is growing, not shrinking.
-            </div>
-            <div style={{ width: 40, height: 2, background: "rgba(61,205,88,0.4)", marginBottom: 20 }} />
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Email, PDF, and portal orders now account for 60–70% of B2B order intake at most manufacturers. Your customers send orders the way it's convenient for them — not you.
-            </div>
-            <div style={{ padding: "12px 16px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              The manufacturers winning this decade adapt to their customers' workflows. Not the other way around.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A0A0A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(200,50,50,0.15)", borderRadius: 20, fontSize: 11, color: "#E07070", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Myth 2 of 4
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              "Manual entry is unavoidable at our order volume."
-            </div>
-            <div style={{ width: 40, height: 2, background: "rgba(200,50,50,0.4)", marginBottom: 20 }} />
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75 }}>
-              This one is understandable. When you're processing 300+ orders a day from 12 different formats, automation feels impossible. But Pfizer and Carlsberg had the same complexity — and both automated it.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(61,205,88,0.12)", borderRadius: 20, fontSize: 11, color: GREEN, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Reality
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Format variation is the problem AI was built for.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                ["Pfizer", "10 markets, multiple SKU formats → automated"],
-                ["Carlsberg", "Unstructured distributor orders → structured ERP entries"],
-                ["$10B Manufacturer", "93% processing time reduction in first deployment"],
-              ].map(([name, result]) => (
-                <div key={name} style={{ display: "flex", gap: 10, padding: "10px 12px", background: PANEL, borderRadius: 8 }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: GREEN, marginTop: 5, flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: 12, color: GREEN, fontWeight: 600, marginBottom: 2 }}>{name}</div>
-                    <div style={{ fontSize: 12, color: MUTED_LIGHT, lineHeight: 1.5 }}>{result}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A0A0A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(200,50,50,0.15)", borderRadius: 20, fontSize: 11, color: "#E07070", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Myth 3 of 4
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              "We'd need to replace our ERP first."
-            </div>
-            <div style={{ width: 40, height: 2, background: "rgba(200,50,50,0.4)", marginBottom: 20 }} />
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75 }}>
-              ERP migrations take 2–4 years and carry enormous risk. If order intake automation required one, it would be dead on arrival. So operations teams don't even start the conversation.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(61,205,88,0.12)", borderRadius: 20, fontSize: 11, color: GREEN, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Reality
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              The AI layer sits on top of what you already have.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Siemens, Schneider Electric, and Pfizer all ran SAP. The automation layer reads email and PDFs, extracts structured order data, and pushes it into the existing ERP — no migration, no re-platforming.
-            </div>
-            <div style={{ padding: "12px 16px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              Deployment measured in weeks. Integration scope: one inbox, one ERP connection.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A0A0A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(200,50,50,0.15)", borderRadius: 20, fontSize: 11, color: "#E07070", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Myth 4 of 4
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              "The ROI takes years to show up."
-            </div>
-            <div style={{ width: 40, height: 2, background: "rgba(200,50,50,0.4)", marginBottom: 20 }} />
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75 }}>
-              This myth kills more automation projects than any technical barrier. Operations leaders assume the business case can't clear a 12-month review cycle. They're thinking about the wrong number.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ display: "inline-block", padding: "4px 12px", background: "rgba(61,205,88,0.12)", borderRadius: 20, fontSize: 11, color: GREEN, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 20 }}>
-              Reality
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Month one carries measurable ROI.
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-              {[
-                ["93%", "reduction in processing time"],
-                ["$8–14", "saved per order, day one"],
-                ["2.5%", "error rate eliminated"],
-                ["Weeks", "to full deployment"],
-              ].map(([stat, label]) => (
-                <div key={stat} style={{ padding: "12px 10px", background: PANEL, borderRadius: 8, textAlign: "center" }}>
-                  <div style={{ fontFamily: SERIF, fontSize: 22, color: GREEN, marginBottom: 4 }}>{stat}</div>
-                  <div style={{ fontSize: 11, color: MUTED, lineHeight: 1.4 }}>{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK2} 0%, #2D6A4F 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px", textAlign: "center" }}>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.35, marginBottom: 16 }}>
-              The full research covers all four myths — with the data behind each one.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED_LIGHT, marginBottom: 28, lineHeight: 1.65 }}>
-              Named benchmarks from Pfizer, Siemens, Carlsberg, Schneider Electric, and a full $10B manufacturer case study.
-            </div>
-            <div style={{ display: "inline-block", padding: "13px 30px", background: GREEN, color: DARK, borderRadius: 8, fontWeight: 700, fontSize: 14, marginBottom: 12 }}>
-              Read the full report
-            </div>
-            <div style={{ fontSize: 12, color: MUTED }}>glacis.com/insights</div>
-            <div style={{ marginTop: 20, fontSize: 13, color: MUTED }}>Philipp Gutheim · Founder & CEO, Glacis</div>
-          </div>
-        ),
-      },
-    ],
-  },
+var bg1='linear-gradient(160deg,'+D+',#0E2018)';
+var bg2='linear-gradient(135deg,'+D+',#1A0A0A)';
+var bg3='linear-gradient(135deg,#0B1A14,#0D2015)';
+var bg4='linear-gradient(135deg,'+D+',#1A2A1A)';
+var bg5='linear-gradient(135deg,'+D+',#1A1A0A)';
+var bgc='linear-gradient(135deg,#1A3A2A,#2D6A4F)';
 
-  transformations: {
-    title: "V2: The 5 Transformations",
-    subtitle: "Social proof listicle · Authority building · Awareness stage",
-    slides: [
-      {
-        bg: `linear-gradient(160deg, ${DARK} 0%, #0E2018 100%)`,
-        content: (
-          <div style={{ padding: "44px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 20 }}>
-              Glacis · Order Intake Intelligence
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 30, color: TEXT, lineHeight: 1.25, marginBottom: 16 }}>
-              5 companies eliminated manual order entry.
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: "#6B8A7A", lineHeight: 1.35, marginBottom: 24 }}>
-              Same problem. Different industries.
-            </div>
-            <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.6 }}>Here's what each one did — and what happened after.</div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>The common thread</div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Each company had the same bottleneck: a human being in the middle of every order.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 20 }}>
-              Email arrives. Someone opens it. Reads it. Types it into the ERP. Checks it. Sends confirmation. Repeat — hundreds of times a day.
-            </div>
-            <div style={{ padding: "12px 16px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              The bottleneck isn't volume. It's the format. These companies found a way around it.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "32px 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 20, color: GREEN }}>1</div>
-              <div>
-                <div style={{ fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Pharma · Global</div>
-                <div style={{ fontSize: 16, color: TEXT, fontWeight: 600 }}>Pfizer</div>
-              </div>
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              Scaled order automation across 10 markets in 6 months.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Challenge: High-volume, multi-format distributor orders across regional markets with different product catalogs and ERP instances.
-            </div>
-            <div style={{ padding: "10px 14px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              Result: Consistent processing times across all markets. Local teams redeployed to exception handling and customer service.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "32px 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 20, color: GREEN }}>2</div>
-              <div>
-                <div style={{ fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Industrial · Global</div>
-                <div style={{ fontSize: 16, color: TEXT, fontWeight: 600 }}>Siemens</div>
-              </div>
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              Cut order processing time by over 80%. Without touching their SAP stack.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Challenge: Dense technical orders from industrial customers — part numbers, custom specs, delivery windows — in unstructured formats.
-            </div>
-            <div style={{ padding: "10px 14px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              Result: AI layer sits between inbox and SAP. No migration. Orders flow through in minutes, not hours.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A2A1A 100%)`,
-        content: (
-          <div style={{ padding: "40px 28px", textAlign: "center" }}>
-            <div style={{ fontFamily: SERIF, fontSize: 14, color: MUTED, lineHeight: 1.6, marginBottom: 16, fontStyle: "italic" }}>
-              "Two down. Three to go."
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              One pattern is already clear.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 24 }}>
-              Neither Pfizer nor Siemens changed how their customers send orders. They changed how their own systems receive them.
-            </div>
-            <div style={{ padding: "12px 16px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              The leverage is on the intake side — not the customer side.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "32px 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 20, color: GREEN }}>3</div>
-              <div>
-                <div style={{ fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>FMCG · Global</div>
-                <div style={{ fontSize: 16, color: TEXT, fontWeight: 600 }}>Carlsberg</div>
-              </div>
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              Automated distributor orders across multiple languages and formats.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Challenge: Thousands of distributor orders daily, arriving in inconsistent formats across markets with different languages.
-            </div>
-            <div style={{ padding: "10px 14px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              Result: Unstructured orders automatically parsed, validated, and entered — regardless of format or language.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "32px 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 20, color: GREEN }}>4</div>
-              <div>
-                <div style={{ fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Energy & Automation · Global</div>
-                <div style={{ fontSize: 16, color: TEXT, fontWeight: 600 }}>Schneider Electric</div>
-              </div>
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              Removed manual entry from the order confirmation loop entirely.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Challenge: Complex B2B orders with pricing exceptions, delivery conditions, and contract terms requiring human review at every step.
-            </div>
-            <div style={{ padding: "10px 14px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              Result: AI handles straight-through processing. Humans only touch exceptions — the 3% that genuinely need judgment.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "32px 28px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 8, background: PANEL, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: SERIF, fontSize: 20, color: GREEN }}>5</div>
-              <div>
-                <div style={{ fontSize: 11, color: MUTED, letterSpacing: 1, textTransform: "uppercase" }}>Manufacturing · $10B Revenue</div>
-                <div style={{ fontSize: 16, color: TEXT, fontWeight: 600 }}>Anonymous Case Study</div>
-              </div>
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: TEXT, lineHeight: 1.3, marginBottom: 16 }}>
-              93% reduction in order processing time. First deployment.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              A $10B global manufacturer processing hundreds of non-EDI orders daily. Full details — including error rates, processing times before and after — in the case study.
-            </div>
-            <div style={{ padding: "10px 14px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              From email to ERP entry in under 3 minutes. Previously: 25+ minutes per order.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A2A1A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>The pattern</div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              All 5 companies share four decisions.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {[
-                "They accepted that customers won't change their formats",
-                "They kept their existing ERP — no migration",
-                "They deployed in weeks, not quarters",
-                "They measured ROI from month one, not year three",
-              ].map((item, i) => (
-                <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ width: 20, height: 20, borderRadius: "50%", background: PANEL, border: `1px solid ${GREEN}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: GREEN, flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
-                  <div style={{ fontSize: 13, color: MUTED_LIGHT, lineHeight: 1.5 }}>{item}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A2A1A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>For you</div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              What would a 6th transformation look like at your company?
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 20 }}>
-              The full research includes a live ROI calculator. Enter your order volume and manual cost per order. See the number in 30 seconds.
-            </div>
-            <div style={{ padding: "12px 16px", background: PANEL, borderRadius: 8, fontSize: 13, color: MUTED_LIGHT }}>
-              Median result for 300 orders/day at $12/order: $450K+ in annual processing savings.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK2} 0%, #2D6A4F 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px", textAlign: "center" }}>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.35, marginBottom: 16 }}>
-              Read the benchmarks. Use the calculator. See the case study.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED_LIGHT, marginBottom: 28, lineHeight: 1.65 }}>
-              All 5 companies covered in detail — plus full methodology and a live savings estimator.
-            </div>
-            <div style={{ display: "inline-block", padding: "13px 30px", background: GREEN, color: DARK, borderRadius: 8, fontWeight: 700, fontSize: 14, marginBottom: 12 }}>
-              Read the full report
-            </div>
-            <div style={{ fontSize: 12, color: MUTED }}>glacis.com/insights</div>
-            <div style={{ marginTop: 20, fontSize: 13, color: MUTED }}>Philipp Gutheim · Founder & CEO, Glacis</div>
-          </div>
-        ),
-      },
-    ],
-  },
+var V={
+myth:{t:"Myth vs. Reality",s:"Contrarian framework · Thought leadership · Awareness stage",sl:[
+{b:bg1,h:'<div style="padding:44px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Glacis · Order Intake Intelligence</div>'+h(30,'4 things operations leaders believe about order intake.')+'<div style="'+SF+';font-size:22px;color:#6B8A7A;line-height:1.3;margin-bottom:24px">The data disagrees with all of them.</div><div style="display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:'+G+'"></div><div style="font-size:12px;color:'+M+'">Swipe to see each myth →</div></div></div>'},
+{b:bg2,h:'<div style="padding:36px 28px">'+tag('myth','Myth 1 of 4')+h(26,'"Our customers will eventually switch to EDI."')+divr('r')+body('Operations teams have believed this for a decade. EDI adoption among mid-market B2B buyers has been flat since 2018.')+'</div>'},
+{b:bg3,h:'<div style="padding:36px 28px">'+tag('reality','Reality')+h(26,'Non-EDI order volume is growing, not shrinking.')+divr('g')+body('Email, PDF, and portal orders now account for 60–70% of B2B order intake at most manufacturers.')+panel("The manufacturers winning this decade adapt to their customers' workflows. Not the other way around.")+'</div>'},
+{b:bg2,h:'<div style="padding:36px 28px">'+tag('myth','Myth 2 of 4')+h(26,'"Manual entry is unavoidable at our order volume."')+divr('r')+body('When you process 300+ orders a day from 12 formats, automation feels impossible. But Pfizer and Carlsberg had the same complexity — and both automated it.')+'</div>'},
+{b:bg3,h:'<div style="padding:36px 28px">'+tag('reality','Reality')+'<div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">Format variation is the problem AI was built for.</div>'+proof('Pfizer','10 markets, multiple SKU formats → automated')+proof('Carlsberg','Unstructured distributor orders → structured ERP entries')+proof('$10B Manufacturer','93% processing time reduction in first deployment')+'</div>'},
+{b:bg2,h:'<div style="padding:36px 28px">'+tag('myth','Myth 3 of 4')+h(26,'"We\'d need to replace our ERP first."')+divr('r')+body('ERP migrations take 2–4 years. If order intake automation required one, it would be dead on arrival.')+'</div>'},
+{b:bg3,h:'<div style="padding:36px 28px">'+tag('reality','Reality')+'<div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">The AI layer sits on top of what you already have.</div>'+body('Siemens, Schneider Electric, and Pfizer all ran SAP. No migration, no re-platforming.')+panel('Deployment measured in weeks. One inbox, one ERP connection.')+'</div>'},
+{b:bg2,h:'<div style="padding:36px 28px">'+tag('myth','Myth 4 of 4')+h(26,'"The ROI takes years to show up."')+divr('r')+body('This myth kills more automation projects than any technical barrier. Operations leaders assume the business case can\'t clear a 12-month review cycle.')+'</div>'},
+{b:bg3,h:'<div style="padding:36px 28px">'+tag('reality','Reality')+'<div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">Month one carries measurable ROI.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+stat('93%','reduction in processing time')+stat('$8–14','saved per order, day one')+stat('2.5%','error rate eliminated')+stat('Weeks','to full deployment')+'</div></div>'},
+{b:bgc,h:cta('The full research covers all four myths — with the data behind each one.','Named benchmarks from Pfizer, Siemens, Carlsberg, Schneider Electric, and a full $10B manufacturer case study.')}
+]},
 
-  inaction: {
-    title: "V1: Cost of Inaction",
-    subtitle: "PAS framework · Decision stage · Direct buyer",
-    slides: [
-      {
-        bg: `linear-gradient(160deg, ${DARK} 0%, #0E2018 100%)`,
-        content: (
-          <div style={{ padding: "44px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 20 }}>
-              Glacis · Order Intake Intelligence
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 30, color: TEXT, lineHeight: 1.25, marginBottom: 20 }}>
-              Your team processes hundreds of orders a day.
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: "#6B8A7A", lineHeight: 1.35 }}>
-              Most of them shouldn't need a human.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>The problem</div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Every non-EDI order runs the same expensive loop.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {[
-                "Email arrives in shared inbox",
-                "Someone opens it. Reads it. Interprets it.",
-                "Types order data into the ERP",
-                "Checks for errors. Sends confirmation.",
-                "Repeat. 300 more times today.",
-              ].map((step, i) => (
-                <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                  <div style={{ fontSize: 11, color: MUTED, marginTop: 2, minWidth: 16 }}>{i + 1}.</div>
-                  <div style={{ fontSize: 13, color: MUTED_LIGHT, lineHeight: 1.5 }}>{step}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>What it costs</div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              At 300 orders/day, the math is not subtle.
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-              {[
-                ["$900K", "Annual manual processing cost"],
-                ["750", "Orders carrying entry errors yearly"],
-                ["25 min", "Average time per order"],
-                ["$75K+", "Annual error correction cost"],
-              ].map(([stat, label]) => (
-                <div key={stat} style={{ padding: "14px 12px", background: PANEL, borderRadius: 8, textAlign: "center" }}>
-                  <div style={{ fontFamily: SERIF, fontSize: 22, color: GREEN, marginBottom: 6 }}>{stat}</div>
-                  <div style={{ fontSize: 11, color: MUTED, lineHeight: 1.4 }}>{label}</div>
-                </div>
-              ))}
-            </div>
-            <div style={{ fontSize: 12, color: MUTED, fontStyle: "italic" }}>Based on industry averages · 300 orders/day · $12/order · 2.5% error rate</div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #1A1A0A 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: "#E0C870", letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>The compounding problem</div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              The cost of doing nothing compounds every year.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              Order volume grows. Error rates hold steady. Your team handles more — but manual processing doesn't get cheaper. By year three, you've spent $2.7M on a workflow that a well-deployed AI system could handle for under $200K.
-            </div>
-            <div style={{ padding: "12px 16px", background: "#1A1A0A", borderRadius: 8, fontSize: 13, color: "#E8D890", border: "1px solid rgba(200,180,50,0.15)" }}>
-              The companies that automated in 2021 have already recovered their investment three times over.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px", textAlign: "center" }}>
-            <div style={{ fontFamily: SERIF, fontSize: 14, color: MUTED, lineHeight: 1.6, marginBottom: 16, fontStyle: "italic" }}>
-              "But we've always done it this way."
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              So did Pfizer. Siemens. Carlsberg. Schneider Electric.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75 }}>
-              All four ran fully manual intake until they didn't. All four deployed in weeks. All four measured ROI from month one — not year three.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>What changes</div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Email arrives. Order enters ERP. No one types anything.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                ["Inbox → ERP", "Under 3 minutes. Fully automated."],
-                ["Error rate", "Near zero. AI validates against catalog before submission."],
-                ["Your team", "Handles exceptions — the 3% that genuinely need judgment."],
-              ].map(([label, desc]) => (
-                <div key={label} style={{ display: "flex", gap: 12, padding: "10px 12px", background: PANEL, borderRadius: 8 }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: GREEN, marginTop: 6, flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: 12, color: GREEN, fontWeight: 600, marginBottom: 2 }}>{label}</div>
-                    <div style={{ fontSize: 12, color: MUTED_LIGHT, lineHeight: 1.5 }}>{desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>How fast</div>
-            <div style={{ fontFamily: SERIF, fontSize: 26, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Deployed in weeks. Integrated with your existing ERP.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.75, marginBottom: 16 }}>
-              The AI layer reads emails and PDFs, extracts structured order data, and pushes it into SAP, Oracle, or your current system. No migration. No re-platforming.
-            </div>
-            <div style={{ display: "flex", gap: 10 }}>
-              {[["Weeks 1–2", "Integration setup"], ["Weeks 3–4", "Validation & go-live"], ["Month 2", "Full production volume"]].map(([time, label]) => (
-                <div key={time} style={{ flex: 1, padding: "10px 8px", background: PANEL, borderRadius: 8, textAlign: "center" }}>
-                  <div style={{ fontSize: 11, color: GREEN, marginBottom: 4, fontWeight: 600 }}>{time}</div>
-                  <div style={{ fontSize: 10, color: MUTED, lineHeight: 1.4 }}>{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK} 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px" }}>
-            <div style={{ fontSize: 11, color: GREEN, letterSpacing: 2, textTransform: "uppercase", marginBottom: 16 }}>Real numbers</div>
-            <div style={{ fontFamily: SERIF, fontSize: 22, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              From a $10B manufacturer. First deployment.
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                { label: "Processing time", before: "25+ min / order", after: "Under 3 min", change: "−93%" },
-                { label: "Error rate", before: "2.5%", after: "~0.1%", change: "−96%" },
-                { label: "Cost per order", before: "$12–18", after: "$1.77–5", change: "−70%" },
-              ].map(({ label, before, after, change }) => (
-                <div key={label} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, padding: "10px 12px", background: PANEL, borderRadius: 8 }}>
-                  <div>
-                    <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.5 }}>{label}</div>
-                    <div style={{ fontSize: 12, color: "#E07070" }}>{before}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.5 }}>After</div>
-                    <div style={{ fontSize: 12, color: MUTED_LIGHT }}>{after}</div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 10, color: MUTED, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.5 }}>Change</div>
-                    <div style={{ fontSize: 13, color: GREEN, fontWeight: 700 }}>{change}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, #1A0A0A 0%, #0D2015 100%)`,
-        content: (
-          <div style={{ padding: "44px 28px", textAlign: "center" }}>
-            <div style={{ fontFamily: SERIF, fontSize: 14, color: MUTED, lineHeight: 1.6, marginBottom: 24, fontStyle: "italic" }}>
-              "The question isn't whether to automate order intake. It's how long you wait."
-            </div>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.3, marginBottom: 20 }}>
-              Every month of delay is a calculable number.
-            </div>
-            <div style={{ padding: "14px 18px", background: PANEL, borderRadius: 8, fontSize: 14, color: MUTED_LIGHT, lineHeight: 1.6 }}>
-              At 300 orders/day: approximately <span style={{ color: GREEN, fontWeight: 700 }}>$75,000</span> in avoidable processing cost per month of inaction.
-            </div>
-          </div>
-        ),
-      },
-      {
-        bg: `linear-gradient(135deg, ${DARK2} 0%, #2D6A4F 100%)`,
-        content: (
-          <div style={{ padding: "36px 28px", textAlign: "center" }}>
-            <div style={{ fontFamily: SERIF, fontSize: 24, color: TEXT, lineHeight: 1.35, marginBottom: 16 }}>
-              Run the numbers on your order volume.
-            </div>
-            <div style={{ fontSize: 14, color: MUTED_LIGHT, marginBottom: 12, lineHeight: 1.65 }}>
-              The full report includes a live ROI calculator — enter your orders per day and manual cost per order. See your number in 30 seconds.
-            </div>
-            <div style={{ fontSize: 13, color: MUTED, marginBottom: 24, lineHeight: 1.6 }}>
-              Plus named benchmarks from Pfizer, Siemens, Carlsberg, Schneider Electric, and the full $10B manufacturer case study.
-            </div>
-            <div style={{ display: "inline-block", padding: "13px 30px", background: GREEN, color: DARK, borderRadius: 8, fontWeight: 700, fontSize: 14, marginBottom: 12 }}>
-              Calculate your savings
-            </div>
-            <div style={{ fontSize: 12, color: MUTED }}>glacis.com/insights</div>
-            <div style={{ marginTop: 20, fontSize: 13, color: MUTED }}>Philipp Gutheim · Founder & CEO, Glacis</div>
-          </div>
-        ),
-      },
-    ],
-  },
+transformations:{t:"The 5 Transformations",s:"Social proof listicle · Authority building · Awareness stage",sl:[
+{b:bg1,h:'<div style="padding:44px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Glacis · Order Intake Intelligence</div>'+h(30,'5 companies eliminated manual order entry.')+'<div style="'+SF+';font-size:22px;color:#6B8A7A;line-height:1.35;margin-bottom:24px">Same problem. Different industries.</div><div style="font-size:13px;color:'+M+';line-height:1.6">Here\'s what each one did — and what happened after.</div></div>'},
+{b:bg3,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">The common thread</div><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">Each company had the same bottleneck: a human being in the middle of every order.</div>'+body('Email arrives. Someone opens it. Reads it. Types it into the ERP. Checks it. Sends confirmation. Repeat — hundreds of times a day.')+panel("The bottleneck isn't volume. It's the format. These companies found a way around it.")+'</div>'},
+{b:bg3,h:'<div style="padding:32px 28px">'+numcard('1','<div style="font-size:11px;color:'+M+';letter-spacing:1px;text-transform:uppercase">Pharma · Global</div><div style="font-size:16px;color:'+T+';font-weight:600">Pfizer</div>')+'<div style="'+SF+';font-size:22px;color:'+T+';line-height:1.3;margin-bottom:16px">Scaled order automation across 10 markets in 6 months.</div>'+body('Challenge: High-volume, multi-format distributor orders across regional markets with different product catalogs.')+panel('Result: Consistent processing times across all markets. Local teams redeployed to exception handling.')+'</div>'},
+{b:bg3,h:'<div style="padding:32px 28px">'+numcard('2','<div style="font-size:11px;color:'+M+';letter-spacing:1px;text-transform:uppercase">Industrial · Global</div><div style="font-size:16px;color:'+T+';font-weight:600">Siemens</div>')+'<div style="'+SF+';font-size:22px;color:'+T+';line-height:1.3;margin-bottom:16px">Cut order processing time by over 80%. Without touching their SAP stack.</div>'+body('Challenge: Dense technical orders from industrial customers in unstructured formats.')+panel('Result: AI layer sits between inbox and SAP. No migration. Orders flow through in minutes.')+'</div>'},
+{b:bg4,h:'<div style="padding:40px 28px;text-align:center"><div style="'+SF+';font-size:14px;color:'+M+';line-height:1.6;margin-bottom:16px;font-style:italic">"Two down. Three to go."</div><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:16px">One pattern is already clear.</div>'+body('Neither Pfizer nor Siemens changed how their customers send orders. They changed how their own systems receive them.')+panel('The leverage is on the intake side — not the customer side.')+'</div>'},
+{b:bg3,h:'<div style="padding:32px 28px">'+numcard('3','<div style="font-size:11px;color:'+M+';letter-spacing:1px;text-transform:uppercase">FMCG · Global</div><div style="font-size:16px;color:'+T+';font-weight:600">Carlsberg</div>')+'<div style="'+SF+';font-size:22px;color:'+T+';line-height:1.3;margin-bottom:16px">Automated distributor orders across multiple languages and formats.</div>'+body('Challenge: Thousands of distributor orders daily in inconsistent formats across markets.')+panel('Result: Unstructured orders automatically parsed, validated, and entered — regardless of format.')+'</div>'},
+{b:bg3,h:'<div style="padding:32px 28px">'+numcard('4','<div style="font-size:11px;color:'+M+';letter-spacing:1px;text-transform:uppercase">Energy · Global</div><div style="font-size:16px;color:'+T+';font-weight:600">Schneider Electric</div>')+'<div style="'+SF+';font-size:22px;color:'+T+';line-height:1.3;margin-bottom:16px">Removed manual entry from the order confirmation loop entirely.</div>'+body('Challenge: Complex B2B orders with pricing exceptions and contract terms requiring human review.')+panel('Result: AI handles straight-through processing. Humans only touch the 3% that need judgment.')+'</div>'},
+{b:bg3,h:'<div style="padding:32px 28px">'+numcard('5','<div style="font-size:11px;color:'+M+';letter-spacing:1px;text-transform:uppercase">Manufacturing · $10B</div><div style="font-size:16px;color:'+T+';font-weight:600">Anonymous Case Study</div>')+'<div style="'+SF+';font-size:22px;color:'+T+';line-height:1.3;margin-bottom:16px">93% reduction in order processing time. First deployment.</div>'+body('A $10B global manufacturer processing hundreds of non-EDI orders daily.')+panel('From email to ERP entry in under 3 minutes. Previously: 25+ minutes per order.')+'</div>'},
+{b:bg4,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">The pattern</div><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">All 5 companies share four decisions.</div>'+patternItem('1','They accepted that customers won\'t change their formats')+patternItem('2','They kept their existing ERP — no migration')+patternItem('3','They deployed in weeks, not quarters')+patternItem('4','They measured ROI from month one, not year three')+'</div>'},
+{b:bg4,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">For you</div><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">What would a 6th transformation look like at your company?</div>'+body('The full research includes a live ROI calculator. Enter your order volume and manual cost per order. See the number in 30 seconds.')+panel('Median result for 300 orders/day at $12/order: $450K+ in annual processing savings.')+'</div>'},
+{b:bgc,h:cta('Read the benchmarks. Use the calculator. See the case study.','All 5 companies covered in detail — plus full methodology and a live savings estimator.')}
+]},
+
+inaction:{t:"Cost of Inaction",s:"PAS framework · Decision stage · Direct buyer",sl:[
+{b:bg1,h:'<div style="padding:44px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:20px">Glacis · Order Intake Intelligence</div>'+h(30,'Your team processes hundreds of orders a day.')+'<div style="'+SF+';font-size:22px;color:#6B8A7A;line-height:1.35">Most of them shouldn\'t need a human.</div></div>'},
+{b:bg3,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">The problem</div><div style="'+SF+';font-size:26px;color:'+T+';line-height:1.3;margin-bottom:20px">Every non-EDI order runs the same expensive loop.</div><div style="display:flex;flex-direction:column;gap:6px">'+step(1,'Email arrives in shared inbox')+step(2,'Someone opens it. Reads it. Interprets it.')+step(3,'Types order data into the ERP')+step(4,'Checks for errors. Sends confirmation.')+step(5,'Repeat. 300 more times today.')+'</div></div>'},
+{b:bg3,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">What it costs</div><div style="'+SF+';font-size:26px;color:'+T+';line-height:1.3;margin-bottom:20px">At 300 orders/day, the math is not subtle.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">'+stat('$900K','Annual manual processing cost')+stat('750','Orders carrying entry errors yearly')+stat('25 min','Average time per order')+stat('$75K+','Annual error correction cost')+'</div><div style="font-size:12px;color:'+M+';font-style:italic">Based on industry averages · 300 orders/day · $12/order · 2.5% error rate</div></div>'},
+{b:bg5,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:#E0C870;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">The compounding problem</div><div style="'+SF+';font-size:26px;color:'+T+';line-height:1.3;margin-bottom:20px">The cost of doing nothing compounds every year.</div>'+body('Order volume grows. Error rates hold steady. By year three, you\'ve spent $2.7M on a workflow that AI could handle for under $200K.')+'<div style="padding:12px 16px;background:#1A1A0A;border-radius:8px;font-size:13px;color:#E8D890;border:1px solid rgba(200,180,50,.15);margin-top:16px">The companies that automated in 2021 have already recovered their investment three times over.</div></div>'},
+{b:bg3,h:'<div style="padding:36px 28px;text-align:center"><div style="'+SF+';font-size:14px;color:'+M+';line-height:1.6;margin-bottom:16px;font-style:italic">"But we\'ve always done it this way."</div><div style="'+SF+';font-size:26px;color:'+T+';line-height:1.3;margin-bottom:20px">So did Pfizer. Siemens. Carlsberg. Schneider Electric.</div>'+body('All four ran fully manual intake until they didn\'t. All four deployed in weeks. All four measured ROI from month one.')+'</div>'},
+{b:bg3,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">What changes</div><div style="'+SF+';font-size:26px;color:'+T+';line-height:1.3;margin-bottom:20px">Email arrives. Order enters ERP. No one types anything.</div>'+proof('Inbox → ERP','Under 3 minutes. Fully automated.')+proof('Error rate','Near zero. AI validates against catalog before submission.')+proof('Your team','Handles exceptions — the 3% that genuinely need judgment.')+'</div>'},
+{b:bg3,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">How fast</div><div style="'+SF+';font-size:26px;color:'+T+';line-height:1.3;margin-bottom:20px">Deployed in weeks. Integrated with your existing ERP.</div>'+body('The AI layer reads emails and PDFs, extracts structured order data, and pushes it into SAP, Oracle, or your current system.')+'<div style="display:flex;gap:10px;margin-top:16px"><div style="flex:1;padding:10px 8px;background:'+P+';border-radius:8px;text-align:center"><div style="font-size:11px;color:'+G+';margin-bottom:4px;font-weight:600">Weeks 1–2</div><div style="font-size:10px;color:'+M+';line-height:1.4">Integration setup</div></div><div style="flex:1;padding:10px 8px;background:'+P+';border-radius:8px;text-align:center"><div style="font-size:11px;color:'+G+';margin-bottom:4px;font-weight:600">Weeks 3–4</div><div style="font-size:10px;color:'+M+';line-height:1.4">Validation & go-live</div></div><div style="flex:1;padding:10px 8px;background:'+P+';border-radius:8px;text-align:center"><div style="font-size:11px;color:'+G+';margin-bottom:4px;font-weight:600">Month 2</div><div style="font-size:10px;color:'+M+';line-height:1.4">Full production</div></div></div></div>'},
+{b:bg3,h:'<div style="padding:36px 28px"><div style="font-size:11px;color:'+G+';letter-spacing:2px;text-transform:uppercase;margin-bottom:16px">Real numbers</div><div style="'+SF+';font-size:22px;color:'+T+';line-height:1.3;margin-bottom:20px">From a $10B manufacturer. First deployment.</div>'+row3('Processing','25+ min/order','Under 3 min','−93%')+row3('Error rate','2.5%','~0.1%','−96%')+row3('Cost/order','$12–18','$1.77–5','−70%')+'</div>'},
+{b:'linear-gradient(135deg,#1A0A0A,#0D2015)',h:'<div style="padding:44px 28px;text-align:center"><div style="'+SF+';font-size:14px;color:'+M+';line-height:1.6;margin-bottom:24px;font-style:italic">"The question isn\'t whether to automate order intake. It\'s how long you wait."</div><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.3;margin-bottom:20px">Every month of delay is a calculable number.</div><div style="padding:14px 18px;background:'+P+';border-radius:8px;font-size:14px;color:'+ML+';line-height:1.6">At 300 orders/day: approximately <span style="color:'+G+';font-weight:700">$75,000</span> in avoidable processing cost per month of inaction.</div></div>'},
+{b:bgc,h:'<div style="padding:36px 28px;text-align:center"><div style="'+SF+';font-size:24px;color:'+T+';line-height:1.35;margin-bottom:16px">Run the numbers on your order volume.</div><div style="font-size:14px;color:'+ML+';margin-bottom:12px;line-height:1.65">The full report includes a live ROI calculator — enter your orders per day and cost per order. See your number in 30 seconds.</div><div style="font-size:13px;color:'+M+';margin-bottom:24px;line-height:1.6">Plus named benchmarks from Pfizer, Siemens, Carlsberg, Schneider Electric, and the full $10B case study.</div><div style="display:inline-block;padding:13px 30px;background:'+G+';color:'+D+';border-radius:8px;font-weight:700;font-size:14px;margin-bottom:12px">Calculate your savings</div><div style="font-size:12px;color:'+M+';margin-top:10px">glacis.com/insights</div><div style="margin-top:20px;font-size:13px;color:'+M+'">Philipp Gutheim · Founder & CEO, Glacis</div></div>'}
+]}
 };
 
-export default function App() {
-  const [activeVar, setActiveVar] = useState("myth");
-  const [activeSlide, setActiveSlide] = useState(0);
-  const data = VARIATIONS[activeVar];
-
-  const varLabels = {
-    myth: "Myth vs. Reality",
-    transformations: "5 Transformations",
-    inaction: "Cost of Inaction",
-  };
-
-  return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#111", minHeight: "100vh", color: "#FFF", padding: "20px" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
-      <div style={{ maxWidth: 440, margin: "0 auto" }}>
-        {/* Variation tabs */}
-        <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
-          {Object.entries(varLabels).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => { setActiveVar(key); setActiveSlide(0); }}
-              style={{
-                padding: "8px 14px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                background: activeVar === key ? GREEN : "#222",
-                color: activeVar === key ? DARK : "#888",
-                border: "none", transition: "all 0.2s",
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 4 }}>{data.title}</div>
-        <div style={{ fontSize: 12, color: "#666", marginBottom: 20 }}>{data.subtitle}</div>
-
-        {/* Slide */}
-        <div style={{
-          width: "100%", aspectRatio: "4/5", borderRadius: 16, overflow: "hidden",
-          background: data.slides[activeSlide].bg || DARK,
-          display: "flex", flexDirection: "column", justifyContent: "center",
-          transition: "background 0.3s ease",
-          boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
-        }}>
-          {data.slides[activeSlide].content}
-        </div>
-
-        {/* Dots */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 16 }}>
-          {data.slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveSlide(i)}
-              style={{
-                width: activeSlide === i ? 20 : 8, height: 8, borderRadius: 4,
-                background: activeSlide === i ? GREEN : "#333",
-                border: "none", cursor: "pointer", transition: "all 0.2s", padding: 0,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Nav arrows */}
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
-          <button
-            onClick={() => setActiveSlide(Math.max(0, activeSlide - 1))}
-            style={{ padding: "10px 20px", background: "#222", border: "none", borderRadius: 8, color: "#888", cursor: "pointer", fontSize: 14 }}
-          >
-            ← Previous
-          </button>
-          <span style={{ color: "#555", fontSize: 13, alignSelf: "center" }}>
-            {activeSlide + 1} / {data.slides.length}
-          </span>
-          <button
-            onClick={() => setActiveSlide(Math.min(data.slides.length - 1, activeSlide + 1))}
-            style={{ padding: "10px 20px", background: "#222", border: "none", borderRadius: 8, color: "#888", cursor: "pointer", fontSize: 14 }}
-          >
-            Next →
-          </button>
-        </div>
-      </div>
-
-      <style>{`* { box-sizing: border-box; margin: 0; }`}</style>
-    </div>
-  );
-}
+var cv='myth',ci=0;
+function rn(){var v=V[cv],s=v.sl[ci];
+document.getElementById('tabs').innerHTML=Object.keys(V).map(function(k){return'<button class="tab '+(k===cv?'active':'')+'" onclick="sw(\''+k+'\')">'+V[k].t+'</button>'}).join('');
+document.getElementById('vt').textContent=v.t;
+document.getElementById('vs').textContent=v.s;
+var e=document.getElementById('sl');e.style.background=s.b;e.innerHTML=s.h;
+document.getElementById('dt').innerHTML=v.sl.map(function(_,i){return'<button class="dot '+(i===ci?'active':'')+'" onclick="go('+i+')"></button>'}).join('');
+document.getElementById('ct').textContent=(ci+1)+' / '+v.sl.length;}
+function sw(k){cv=k;ci=0;rn()}
+function go(i){ci=i;rn()}
+function pr(){if(ci>0){ci--;rn()}}
+function nx(){if(ci<V[cv].sl.length-1){ci++;rn()}}
+var tx=0;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+document.addEventListener('touchend',function(e){var d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50){d>0?nx():pr()}});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')nx();if(e.key==='ArrowLeft')pr()});
+rn();
+</script>
+</body>
+</html>
