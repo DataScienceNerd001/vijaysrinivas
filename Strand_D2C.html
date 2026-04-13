@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strand CancerSpot // D2C UGC Playbook by Vijay Srinivas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #262626;
+    --border-bright: #383838;
+    --text: #f5f5f0;
+    --text-dim: #a8a8a3;
+    --text-muted: #6b6b66;
+    --accent: #c8ff00;
+    --pulse: #c8ff00;
+    --warm: #ff6b47;
+    --danger: #ff4444;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === HERO === */
+  .hero {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 90px 40px 70px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: rgba(200, 255, 0, 0.08);
+    border: 1px solid rgba(200, 255, 0, 0.3);
+    border-radius: 100px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 36px;
+  }
+
+  .hero-badge span {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .hero h1 {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 76px;
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin-bottom: 32px;
+    color: var(--text);
+  }
+
+  .hero h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    font-size: 19px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    max-width: 740px;
+    margin-bottom: 56px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 60px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat {
+    flex: 1;
+  }
+
+  .stat-num {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* === SECTIONS === */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 90px 40px;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    margin-bottom: 22px;
+  }
+
+  .section-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 52px;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin-bottom: 28px;
+  }
+
+  .section-title em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .section-intro {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    max-width: 820px;
+    margin-bottom: 24px;
+  }
+
+  /* === QUOTE BLOCK === */
+  .quote-block {
+    border-left: 2px solid var(--accent);
+    padding: 28px 36px;
+    margin: 56px 0 0 0;
+    background: rgba(200, 255, 0, 0.03);
+    border-radius: 0 12px 12px 0;
+  }
+
+  .quote-block p {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  .quote-block cite {
+    display: block;
+    margin-top: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+  }
+
+  /* === REFERENCE GRID === */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 36px;
+  }
+
+  .ref-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .ref-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .ref-card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .ref-card-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .ref-card p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .ref-card a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(200, 255, 0, 0.3);
+    padding-bottom: 1px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ref-card a:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  /* === CONCEPTS === */
+  .concept-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 8px;
+  }
+
+  .concept {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+    cursor: pointer;
+  }
+
+  .concept:hover {
+    border-color: var(--border-bright);
+  }
+
+  .concept.active {
+    border-color: var(--accent);
+  }
+
+  .concept-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    padding: 36px;
+  }
+
+  .concept-number {
+    font-family: 'Instrument Serif', serif;
+    font-size: 64px;
+    line-height: 0.9;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .concept-meta {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .concept-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .concept-subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .concept-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .concept-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 11px;
+    border-radius: 100px;
+  }
+
+  .concept-tag.flagship {
+    background: rgba(200, 255, 0, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(200, 255, 0, 0.3);
+  }
+
+  .concept-tag.warm {
+    background: rgba(255, 107, 71, 0.12);
+    color: var(--warm);
+    border: 1px solid rgba(255, 107, 71, 0.3);
+  }
+
+  .concept-tag.neutral {
+    background: rgba(168, 168, 163, 0.08);
+    color: var(--text-dim);
+    border: 1px solid rgba(168, 168, 163, 0.2);
+  }
+
+  .toggle-arrow {
+    color: var(--text-muted);
+    font-size: 28px;
+    transition: transform 0.3s, color 0.3s;
+    flex-shrink: 0;
+    margin-top: 16px;
+    line-height: 1;
+  }
+
+  .concept.active .toggle-arrow {
+    transform: rotate(90deg);
+    color: var(--accent);
+  }
+
+  .concept-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+  }
+
+  .concept.active .concept-body {
+    max-height: 5000px;
+  }
+
+  .concept-body-inner {
+    padding: 0 36px 40px 36px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-dim);
+  }
+
+  .concept-body-inner p {
+    margin-bottom: 16px;
+  }
+
+  .concept-body-inner strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .concept-section {
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .concept-section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* === BEATS === */
+  .beat {
+    background: var(--surface-2);
+    border-left: 2px solid var(--accent);
+    padding: 18px 22px;
+    margin-bottom: 12px;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .beat:last-child {
+    margin-bottom: 0;
+  }
+
+  .beat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .beat-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .beat p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    margin-bottom: 0;
+  }
+
+  /* === BONUS BLOCK === */
+  .bonus {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warm);
+    border-radius: 16px;
+    padding: 40px;
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .bonus-icon {
+    font-family: 'Instrument Serif', serif;
+    font-size: 72px;
+    line-height: 0.85;
+    color: var(--warm);
+  }
+
+  .bonus h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+
+  .bonus-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 11px;
+    border-radius: 100px;
+    background: rgba(255, 107, 71, 0.12);
+    color: var(--warm);
+    border: 1px solid rgba(255, 107, 71, 0.3);
+    margin-bottom: 14px;
+  }
+
+  .bonus p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-dim);
+  }
+
+  /* === FOOTER === */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 70px 40px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer p {
+    margin-bottom: 6px;
+  }
+
+  .footer .name {
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .footer .closer {
+    color: var(--accent);
+    margin-top: 18px;
+    font-size: 12px;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .hero { padding: 60px 24px 50px; }
+    .hero h1 { font-size: 44px; }
+    .hero-sub { font-size: 17px; }
+    .hero-stats { flex-direction: column; gap: 28px; }
+    .stat-num { font-size: 44px; }
+    .section { padding: 60px 24px; }
+    .section-title { font-size: 36px; }
+    .ref-grid { grid-template-columns: 1fr; }
+    .concept-header { flex-direction: column; gap: 12px; padding: 28px; }
+    .concept-number { font-size: 48px; }
+    .concept-title { font-size: 26px; }
+    .concept-body-inner { padding: 0 28px 32px 28px; }
+    .toggle-arrow { display: none; }
+    .bonus { grid-template-columns: 1fr; padding: 32px; gap: 16px; }
+    .bonus-icon { font-size: 56px; }
+    .quote-block p { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span></span>
+    D2C Traffic Playbook · CancerSpot
+  </div>
+  <h1>India doesn't screen<br>for cancer early.<br><em>We can change that.</em></h1>
+  <p class="hero-sub">
+    Most Indians find out about cancer too late. CancerSpot is the first multi-cancer early detection test built for Indian patients, and almost nobody knows it exists yet. The job is to make them search for it. The fastest wedge: real creator video in a category Galleri refuses to touch.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">4.5M</div>
+      <div class="stat-label">Views on Embark's<br>breed reveal party</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Galleri's organic<br>creator presence</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">87%</div>
+      <div class="stat-label">Of medical UGC posts<br>that only show upside</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION I: PATTERN -->
+<section class="section">
+  <div class="section-label">I. The pattern</div>
+  <h2 class="section-title">Five beats. Same structure.<br><em>Every viral reveal.</em></h2>
+  <p class="section-intro">
+    Across dog DNA, ancestry, and the one cancer detection video that actually went viral (Sidney Raz, 1.5M followers, picked up by E! and People), the format that works follows the same five beats. Why I'm doing this. The waiting. The reveal. What I learned. What I'm doing next.
+  </p>
+  <p class="section-intro">
+    What kills the video: scripted lines, polished b-roll, music over the reveal, actors instead of real people. What multiplies it: a second person reacting, a family stake, real surprise, a counselor grounding the result. CancerSpot fits the format better than any product currently using it. The reason nobody is doing it is fear, not impossibility.
+  </p>
+
+  <div class="quote-block">
+    <p>It was literally just my daughter's DNA that saved my life.</p>
+    <cite>Sidney Raz · TikTok · April 2025 · Picked up by E!, People, Yahoo</cite>
+  </div>
+</section>
+
+<!-- SECTION II: REFERENCE -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">II. Reference shelf</div>
+  <h2 class="section-title">What's already <em>working elsewhere.</em></h2>
+  <p class="section-intro">
+    Four formats worth studying before we shoot. Two from dog and human DNA where the reveal is the entire brand. Two from cancer-adjacent territory where the emotional template proved out.
+  </p>
+  <div class="ref-grid">
+    <div class="ref-card">
+      <div class="ref-card-label">Dog DNA · Embark Vet</div>
+      <div class="ref-card-title">The breed reveal party</div>
+      <p>Owner throws a literal gender-reveal-style party for dog DNA results. Friends gathered, balloon pop, the works. 4.5M views, 914K likes. The format that built Embark's brand on TikTok.</p>
+      <a href="https://www.tiktok.com/@embarkvet" target="_blank">@embarkvet on TikTok →</a>
+    </div>
+    <div class="ref-card">
+      <div class="ref-card-label">Cancer detection · Sidney Raz</div>
+      <div class="ref-card-title">The emotional template</div>
+      <p>Discovers stomach cancer through genetic testing after his daughter dies in utero. No scripts, no music swells. Just the person processing. Picked up by every major outlet.</p>
+      <a href="https://people.com/sidney-raz-stomach-cancer-genetic-testing-daughter-died-11711276" target="_blank">People coverage →</a>
+    </div>
+    <div class="ref-card">
+      <div class="ref-card-label">Doctor-creator · Joel Bervell MD</div>
+      <div class="ref-card-title">Sponsored, not salesy</div>
+      <p>An MD doing the brand deal for 23andMe Health. Proves doctor-creator partnerships work in practice when the doctor is the patient, not the spokesperson.</p>
+      <a href="https://www.tiktok.com/@joelbervell/video/7229455147779525934" target="_blank">Watch on TikTok →</a>
+    </div>
+    <div class="ref-card">
+      <div class="ref-card-label">Human ancestry · 23andMe</div>
+      <div class="ref-card-title">The face cam never lies</div>
+      <p>Search "#23andme #results" on TikTok or "23andMe reveal" on YouTube. Millions of posts. Long-form 5 to 15 minute versions perform best when the face cam is honest.</p>
+      <a href="https://www.tiktok.com/tag/23andme" target="_blank">#23andme on TikTok →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION III: CONCEPTS -->
+<section class="section">
+  <div class="section-label">III. Four concepts</div>
+  <h2 class="section-title">The video plays<br>I'd <em>build first.</em></h2>
+  <p class="section-intro">
+    One flagship anchor (Mother-Daughter), three parallel formats that each unlock a different audience and a different distribution channel. Click any concept to expand. The flagship is detailed beat by beat. The other three are scoped tight enough to brief and ship in the same quarter.
+  </p>
+
+  <div class="concept-grid">
+
+    <!-- 01 Mother-Daughter -->
+    <div class="concept active" onclick="toggleConcept(this)">
+      <div class="concept-header">
+        <div class="concept-number">01</div>
+        <div class="concept-meta">
+          <div class="concept-title">The Mother-Daughter Test</div>
+          <div class="concept-subtitle">Flagship anchor · 4 to 5 minute long-form, 60 to 90 second cut for Reels</div>
+          <div class="concept-tags">
+            <span class="concept-tag flagship">Flagship</span>
+            <span class="concept-tag warm">Family</span>
+            <span class="concept-tag neutral">5 beats</span>
+          </div>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="concept-body">
+        <div class="concept-body-inner">
+          <p><strong>Why this works.</strong> The generational gap in how Indian families think about health screening is a universal, deeply relatable tension. The mother who says "why look for trouble" versus the daughter who says "I need to know." Every Indian family has this dynamic. It never gets old because every family is different.</p>
+
+          <p><strong>The format.</strong> Two people, two reactions, one result. The daughter convinces her mother (age 50 to 60) to take CancerSpot together. The video documents the entire arc across two to three weeks.</p>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Creator profile</div>
+            <p>Indian female creator, age 28 to 40, health/wellness or lifestyle niche, 50K to 500K followers. Not a mega-influencer. The mother should be her actual mother, not an actress. The authenticity is the entire point.</p>
+          </div>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Distribution</div>
+            <p>YouTube long-form as the anchor asset. 60 second Reel cut for Instagram. 60 second Short for YouTube Shorts. WhatsApp-optimized vertical cut (the family group chat forward is worth more than 100K paid impressions). Creator posts on her own channels, Strand reposts on brand channels with permission.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 Couple -->
+    <div class="concept" onclick="toggleConcept(this)">
+      <div class="concept-header">
+        <div class="concept-number">02</div>
+        <div class="concept-meta">
+          <div class="concept-title">The Couple Test</div>
+          <div class="concept-subtitle">High-intent crossover · couples already in the planning-our-future mindset</div>
+          <div class="concept-tags">
+            <span class="concept-tag flagship">High-intent</span>
+            <span class="concept-tag warm">Crossover</span>
+          </div>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="concept-body">
+        <div class="concept-body-inner">
+          <p><strong>Why this works.</strong> Couples already in the planning-our-future mindset are natural buyers. Fertility clinic patients, newly married couples, expecting parents. Two people taking the test together doubles the suspense and creates natural conversation on camera.</p>
+
+          <p><strong>The format.</strong> Both partners take CancerSpot. Same five-beat structure as concept 01 but with two parallel emotional arcs. The tension between what one partner wants to know and what the other is afraid to find out. The conversation about "what would we do if one of us got a result?" That conversation, filmed authentically, is the most powerful content in this category.</p>
+
+          <div class="concept-section">
+            <div class="concept-section-label">The hook that makes it shareable</div>
+            <p>"We took a cancer screening test before trying for a baby. Here's what happened." This framing connects CancerSpot to the fertility and family planning moment, which is already a high-intent period for health decisions. The audience is self-selecting: anyone who clicks is already thinking about their own health in this exact window.</p>
+          </div>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Creator profile</div>
+            <p>Couple creators, age 28 to 38, lifestyle or parenting niche. Both partners need to be comfortable on camera. The dynamic between them matters more than individual follower count.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 Office Bet -->
+    <div class="concept" onclick="toggleConcept(this)">
+      <div class="concept-header">
+        <div class="concept-number">03</div>
+        <div class="concept-meta">
+          <div class="concept-title">The Office Bet</div>
+          <div class="concept-subtitle">Lighter tone · doubles as a corporate wellness sales tool</div>
+          <div class="concept-tags">
+            <span class="concept-tag flagship">Lighter</span>
+            <span class="concept-tag neutral">B2B2C wedge</span>
+          </div>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="concept-body">
+        <div class="concept-body-inner">
+          <p><strong>Why this works.</strong> Lighter tone. Accessible. Destigmatizes cancer screening by making it a group activity instead of a private, scary decision. "We got our whole office to take CancerSpot. Here's what happened."</p>
+
+          <p><strong>The format.</strong> A startup founder or HR head convinces 5 to 10 employees to take CancerSpot as part of a wellness initiative. The video follows the group dynamic: who's nervous, who's making jokes, who's quietly scared. The results are individual and private, but the group processes the experience together. The punchline: "We thought we were healthy. Turns out two of us needed follow-up screening we never would have done."</p>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Why this works for Strand specifically</div>
+            <p>Doubles as a proof-of-concept for the corporate wellness channel. The video is both content and a sales tool for the B2B2C play (MediBuddy, Practo for Business, corporate health checkup vendors). One video, two distribution channels. The same asset that drives D2C traffic also closes the next ten enterprise wellness contracts.</p>
+          </div>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Creator profile</div>
+            <p>Startup founder with a following, or a corporate wellness influencer. The office setting needs to feel real, not staged. Bonus points if the founder has talked publicly about employee health before.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 Doctor -->
+    <div class="concept" onclick="toggleConcept(this)">
+      <div class="concept-header">
+        <div class="concept-number">04</div>
+        <div class="concept-meta">
+          <div class="concept-title">The Doctor Explains</div>
+          <div class="concept-subtitle">Trust without endorsement · the doctor is the patient, not the spokesperson</div>
+          <div class="concept-tags">
+            <span class="concept-tag flagship">Authority</span>
+            <span class="concept-tag neutral">Skin in the game</span>
+          </div>
+        </div>
+        <div class="toggle-arrow">›</div>
+      </div>
+      <div class="concept-body">
+        <div class="concept-body-inner">
+          <p><strong>Why this works.</strong> Trust. In India, the doctor's word carries more weight than any influencer. But traditional doctor endorsements feel like ads. This format makes the doctor a co-creator, not a spokesperson.</p>
+
+          <p><strong>The format.</strong> An Indian doctor-creator (oncologist, genetic counselor, or GP with a following) takes CancerSpot themselves. Not reviewing it. Not endorsing it. Taking it. They explain the science as they go through each step: "Here's what happens to my blood sample. Here's what the test is actually looking for. Here's what the results mean and don't mean. Here's what I'd tell a patient if they got this result."</p>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Why this is different from a sponsored post</div>
+            <p>The doctor is the patient. They're experiencing the test, not explaining it abstractly. The credibility comes from skin in the game. "I took this test because I believe in the science enough to do it myself." Every other doctor endorsement in the category sounds like a paid read. This one doesn't.</p>
+          </div>
+
+          <div class="concept-section">
+            <div class="concept-section-label">Creator profile</div>
+            <p>Indian doctor-creators with established followings. Oncologists or genetic counselors preferred (direct domain credibility). GPs with large followings work for reach (Dr Tanaya Narendra @dr_cuterus has 3M+ followers). Pathologists or molecular biologists for the behind-the-science angle.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION IV: BONUS -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">IV. Worth testing fast</div>
+  <h2 class="section-title">The fertility clinic <em>crossover.</em></h2>
+
+  <div class="bonus">
+    <div class="bonus-icon">+</div>
+    <div>
+      <span class="bonus-tag">Hot lead pool</span>
+      <h3>The Fertility Clinic Crossover</h3>
+      <p>Couples doing IVF are already in the genetic-testing mindset. They're already paying for carrier screening. CancerSpot as an add-on during the same blood draw. The video: "We were already getting genetic testing for our IVF cycle. Our counselor mentioned CancerSpot. Here's why we said yes." Hot lead pool, high intent, low CAC. Pilot with two to three fertility chains in Mumbai and Bangalore in the first 60 days. The lead source pays for the entire video budget by month three if the conversion math holds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION V: COMMITMENT -->
+<section class="section" style="padding-top: 0;">
+  <div class="section-label">V. The non-negotiable</div>
+  <h2 class="section-title">Every video,<br><em>clinically reviewed.</em></h2>
+  <p class="section-intro">
+    A University of Sydney study published in JAMA Network Open in February 2025 analyzed 1,000 influencer posts about medical screening tests. 87% highlighted only benefits. 15% mentioned harms. The researchers called it "an open sewer of medical misinformation."
+  </p>
+  <p class="section-intro">
+    Strand cannot be in that 87%. Every creator video gets clinical sign-off before publishing. Every video includes a clear "screening test, not a diagnosis" line. Every video shows a genetic counselor on screen, named, in scrubs. The limitations are visible. This is not a constraint, it is the moat. The companies doing this carefully will outlast the ones running pure conversion plays. And it gives Strand something Galleri can't claim: the most rigorous creator program in the category.
+  </p>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p class="name">Built by Vijay Srinivas // April 2026</p>
+  <p>Marketing Head Candidate · Strand Life Sciences</p>
+  <p>IIM Ahmedabad · Ex-RagaAI · AI-native GTM</p>
+</div>
+
+<script>
+  function toggleConcept(el) {
+    const wasActive = el.classList.contains('active');
+    document.querySelectorAll('.concept').forEach(o => o.classList.remove('active'));
+    if (!wasActive) el.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
